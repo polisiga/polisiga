@@ -6,7 +6,7 @@ from django.urls import path
 
 
 urlpatterns = [
-    path('academico',include('academico.urls')),
+    path('academico/',include('academico.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),
 ]

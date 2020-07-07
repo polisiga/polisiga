@@ -6,4 +6,5 @@ from .models import Alumno
 
 class AlumnoAdmin(admin.ModelAdmin):
     pass
+
 admin.site.register(Alumno, AlumnoAdmin)

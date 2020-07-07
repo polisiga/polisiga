@@ -10,14 +10,14 @@ User = settings.AUTH_USER_MODEL
 
 class Alumno(models.Model):
     user = models.OneToOneField(
-        User, on_delete=models.PROTECT, null=True)
+        User, on_delete=models.PROTECT,blank=True, null=True)
     cedula = models.BigIntegerField(unique=True)
     nombre = models.CharField(max_length=30)
     apellido = models.CharField(max_length=30)
     correo = models.EmailField()
 
     def get_absolute_url(self):
-        return reverse('academico:alumno-detail', kwargs={'pk': self.pk})
+        return reverse('academico:alumno_detail', kwargs={'pk': self.pk})
 
 
 class Asignatura(models.Model):
