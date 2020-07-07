@@ -10,7 +10,7 @@ from django.views.generic import TemplateView
 class HomeView(LoginRequiredMixin, TemplateView):
     """
     Aakmdslasasdlkasdmalsd
-    Permisos: Tiene q tener permiso 'visor-inicio'    
+    Permisos: 'secretaria-academico' , 'dir-academico' 'jefe-departamento'
     """
     template_name = 'academico/index.html'
 

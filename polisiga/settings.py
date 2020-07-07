@@ -31,6 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'adminlte3',
+    'adminlte3_theme',
     'academico',
     'adminlte3',
     'django.contrib.admin',
@@ -121,8 +123,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+<<<<<<< HEAD
 
 STATIC_ROOT = '/opt/polisiga/static'
 
 
 LOGIN_REDIRECT_URL = 'academico/'
+=======
+STATIC_ROOT = "/opt/polisiga/static/"
+>>>>>>> 8e7ceb53b8975db667f8142a28a2b8506243c7e6
