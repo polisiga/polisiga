@@ -13,8 +13,8 @@ https://github.com/ColorlibHQ/AdminLTE
 
 ## Como Clonar
 
-git clone git@github.com:DelmisMartinez/polisiga.git
-
+git clone git@github.com:DelmisMartinez/polisiga.git 
+linea asd as
 
 ## Generar la carpeta venv con el entorno virtual
 
