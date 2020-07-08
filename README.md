@@ -11,6 +11,11 @@ https://github.com/ColorlibHQ/AdminLTE
 
 # Comandos Utiles
 
+## Como Clonar
+
+git clone git@github.com:DelmisMartinez/polisiga.git
+
+
 ## Generar la carpeta venv con el entorno virtual
 
 Primero ubicarse en la raiz del proyecto que es donde se encuentra el archivo
