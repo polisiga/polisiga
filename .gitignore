@@ -3,3 +3,5 @@ venv
 static
 static_
 db.sqlite3
+
+dumpdata

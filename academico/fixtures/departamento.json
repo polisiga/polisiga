@@ -1,0 +1,34 @@
+[
+{
+  "model": "academico.departamento",
+  "pk": 1,
+  "fields": {
+    "nombre": "Inform\u00e1tica",
+    "siglas": "DIN"
+  }
+},
+{
+  "model": "academico.departamento",
+  "pk": 2,
+  "fields": {
+    "nombre": "Gesti\u00f3n",
+    "siglas": "DGE"
+  }
+},
+{
+  "model": "academico.departamento",
+  "pk": 3,
+  "fields": {
+    "nombre": "Electricidad y Electr\u00f3nica",
+    "siglas": "DEE"
+  }
+},
+{
+  "model": "academico.departamento",
+  "pk": 4,
+  "fields": {
+    "nombre": "Ciencias B\u00e1sicas",
+    "siglas": "DCB"
+  }
+}
+]

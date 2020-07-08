@@ -210,7 +210,7 @@ class Docente(models.Model):
     categoria_docente = models.IntegerField(null=True)
 
     def registros(self):
-        return RegistroCatedra.objects.all().filter(docente__id=self.id)
+        return RegistroCatedra.object.all().filter(docente__id=self.id)
 
     def __str__(self):
         return str(self.id) + ' - ' + self.apellido + ', ' + self.nombre
@@ -258,14 +258,14 @@ class Periodo(models.Model):
     p_lec_desde = models.DateField()
     p_lect_hasta = models.DateField()
 
-    par1_desde = models.DateField()
-    par1_hasta = models.DateField()
-    par2_desde = models.DateField()
-    par2_hasta = models.DateField()
-    fin1_desde = models.DateField()
-    fin1_hasta = models.DateField()
-    fin2_desde = models.DateField()
-    fin2_hasta = models.DateField()
+    par1_desde = models.DateField(blank=True)
+    par1_hasta = models.DateField(blank=True)
+    par2_desde = models.DateField(blank=True)
+    par2_hasta = models.DateField(blank=True)
+    fin1_desde = models.DateField(blank=True)
+    fin1_hasta = models.DateField(blank=True)
+    fin2_desde = models.DateField(blank=True)
+    fin2_hasta = models.DateField(blank=True)
 
     def __str__(self):
         return str(self.numero) + '/' + str(self.year)
