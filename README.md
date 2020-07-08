@@ -21,10 +21,27 @@ linea asd as
 Primero ubicarse en la raiz del proyecto que es donde se encuentra el archivo
 manage.py
 
-python3 -m venv venv
+(para powershell habilitar para ejecutar scripts https://docs.microsoft.com/es-es/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7)
+
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unestricted
+
+python -m venv venv
 
 pip install --upgrade pip
 pip install -r requirements.txt
+
+## Preparar primer inicio
+
+(para generar las BBDD)
+python manage.py migrate
+
+(crear un superusuario)
+python manage.py createsuperuser
+
+(cargar datos de prueba)
+python .\manage.py loaddata departamento
+
+
 
 ## Comando para iniciar el servidor
 

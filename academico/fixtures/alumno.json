@@ -1,0 +1,35 @@
+[
+{
+  "model": "academico.alumno",
+  "pk": 1,
+  "fields": {
+    "user": null,
+    "cedula": 6244497,
+    "nombre": "asd",
+    "apellido": "asd",
+    "correo": "asd@asd.com"
+  }
+},
+{
+  "model": "academico.alumno",
+  "pk": 2,
+  "fields": {
+    "user": null,
+    "cedula": 234234,
+    "nombre": "fulanito",
+    "apellido": "de tal",
+    "correo": "fulanito@asd.com"
+  }
+},
+{
+  "model": "academico.alumno",
+  "pk": 3,
+  "fields": {
+    "user": null,
+    "cedula": 239812739,
+    "nombre": "asdapsokd",
+    "apellido": "dasdasd asd ",
+    "correo": "fulaasdnito@asd.com"
+  }
+}
+]
