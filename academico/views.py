@@ -1,26 +1,37 @@
 from django.contrib.auth.decorators import (
     login_required,
-    permission_required)
+    permission_required,
+)
 from django.shortcuts import (
+    get_list_or_404,
     get_object_or_404,
-    render)
+    redirect,
+    render,
+)
 
+from .models import (
+    Alumno,
+)
 
 @login_required
 def index(request):
+
     return render(request, 'academico/index.html')
+
+def index_redirect(request):
+    return redirect('academico:index')
 
 
 def alumno_detail(request, pk):
-    print("Hola " + str(pk))
+    alumno = get_object_or_404(Alumno, pk=pk)
     
-    return render(request, 'academico/alumno_detail.html')
+    return render(request, 'academico/alumno_detail.html', {'alumno': alumno})
 
 @login_required
 @permission_required('view_alumno')
 def alumno_list(request):
-    print("prueba")
-    return render(request, 'academico/alumno_list.html')
+    alumnos = get_list_or_404(Alumno)
+    return render(request, 'academico/alumno_list.html', {'alumnos': alumnos})
 
 
 def asignatura_detail(request, pk):

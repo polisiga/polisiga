@@ -3,9 +3,12 @@ from django.contrib.auth import views as auth_views
 from django.urls import include
 from django.urls import path
 
+from academico.views import index_redirect
+
 
 
 urlpatterns = [
+    path('', index_redirect),
     path('academico/',include('academico.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('admin/', admin.site.urls),

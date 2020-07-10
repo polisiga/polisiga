@@ -14,8 +14,11 @@ class Alumno(models.Model):
     cedula = models.BigIntegerField(unique=True)
     nombre = models.CharField(max_length=30)
     apellido = models.CharField(max_length=30)
-    correo = models.EmailField()
-
+    correo = models.EmailField(unique=True,blank=True)
+    
+    def __str__(self):
+        return self.nombre + " "  + self.apellido
+        
     def get_absolute_url(self):
         return reverse('academico:alumno_detail', kwargs={'pk': self.pk})
 
