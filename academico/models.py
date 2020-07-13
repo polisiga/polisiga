@@ -22,9 +22,9 @@ class Alumno(models.Model):
     def get_absolute_url(self):
         return reverse('academico:alumno_detail', kwargs={'pk': self.pk})
 
-
+# TODO: Verificar si dos Asignaturas tienen el mismo codigo, (GrupoHomologas)
 class Asignatura(models.Model):
-    codigo = models.CharField(max_length=10, null=True)
+    codigo = models.CharField(max_length=10, null=True, blank=True)
     siglas = models.CharField(null=True, max_length=10)
     nombre = models.CharField(max_length=100, null=True)
     carrera = models.ForeignKey('Carrera', on_delete=models.PROTECT, null=True)
@@ -55,12 +55,13 @@ class Asignatura(models.Model):
         return x_str
 
     def __str__(self):
-        return self.carrera.siglas + " - " + self.nombre
+        return str(self.pk) + " - " + self.carrera.siglas + " - " + self.nombre
 
 
 class Carrera(models.Model):
     nombre = models.CharField(max_length=50)
     siglas = models.CharField(max_length=5, blank=True)
+    semestres = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
 
@@ -133,18 +134,15 @@ class Catedra(models.Model):
 
     def homologas(self):
         """
-        Nos da las asignaturas homologas en esta catedra, se toma como
-        referencia la primera asignatura y luego se traen las asignaturas
-        de su grupo de homologas.
+        Queryset de asignaturas homologas.
         """
         try:
             grupo_h = self.asignaturas.all().first().grupohomologas.id
-            o = Asignatura.objects.filter(grupohomologas__id=grupo_h)
-            x_str = ' / '.join([str(i) for i in o])
+            qs = Asignatura.objects.filter(grupohomologas__id=grupo_h)
+            
         except:
-            o = None
-            x_str = ""
-        return x_str
+            qs = Asignatura.objects.none()
+        return qs
 
     def homologas_str(self):
         return '-'.join([str(i) for i in self.homologas()])
@@ -261,14 +259,14 @@ class Periodo(models.Model):
     p_lec_desde = models.DateField()
     p_lect_hasta = models.DateField()
 
-    par1_desde = models.DateField(blank=True)
-    par1_hasta = models.DateField(blank=True)
-    par2_desde = models.DateField(blank=True)
-    par2_hasta = models.DateField(blank=True)
-    fin1_desde = models.DateField(blank=True)
-    fin1_hasta = models.DateField(blank=True)
-    fin2_desde = models.DateField(blank=True)
-    fin2_hasta = models.DateField(blank=True)
+    par1_desde = models.DateField(blank=True, null=True)
+    par1_hasta = models.DateField(blank=True, null=True)
+    par2_desde = models.DateField(blank=True, null=True)
+    par2_hasta = models.DateField(blank=True, null=True)
+    fin1_desde = models.DateField(blank=True, null=True)
+    fin1_hasta = models.DateField(blank=True, null=True)
+    fin2_desde = models.DateField(blank=True, null=True)
+    fin2_hasta = models.DateField(blank=True, null=True)
 
     def __str__(self):
         return str(self.numero) + '/' + str(self.year)
