@@ -37,6 +37,7 @@ python manage.py dumpdata --indent 2 academico.periodo -o dumpdata/periodo.json
 
 
 
+
 cat .\dumpdata\departamento.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\carrera.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\grupohomologas.json | python .\manage.py loaddata --format=json  -
