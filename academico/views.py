@@ -39,14 +39,20 @@ def alumno_list(request):
 def asignatura_detail(request, pk):
     return render(request, 'academico/asignatura_detail.html')
 
-def asignatura_list_view(request):
-    asignatura_list = Asignatura.objects.all()
+def asignatura_list_view(request, *args, **kwargs):
+    
+    filter_val = request.GET.get('filter', '')
+    if filter_val == '':
+        asignatura_list = Asignatura.objects.all()
+    else:
+        asignatura_list = Asignatura.objects.filter(nombre__icontains=filter_val)
+
     paginator = Paginator(asignatura_list, 25)
 
     page = request.GET.get('page')
     asignaturas = paginator.get_page(page)
     
-    return render(request, 'academico/asignatura_list_view.html',  {'asignaturas': asignaturas})
+    return render(request, 'academico/asignatura_list_view.html',  {'asignaturas': asignaturas, 'filter_val': filter_val})
 
 def carrera_detail(request, pk):
     return render(request, 'academico/carrera_detail.html')
