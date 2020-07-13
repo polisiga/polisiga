@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import (
     login_required,
     permission_required,
 )
+from django.core.paginator import Paginator
 from django.shortcuts import (
     get_list_or_404,
     get_object_or_404,
@@ -10,6 +11,7 @@ from django.shortcuts import (
 )
 
 from .models import (
+    Asignatura,
     Alumno,
 )
 
@@ -37,8 +39,14 @@ def alumno_list(request):
 def asignatura_detail(request, pk):
     return render(request, 'academico/asignatura_detail.html')
 
-def asignatura_list(request):
-    return render(request, 'academico/asignatura_list.html')
+def asignatura_list_view(request):
+    asignatura_list = Asignatura.objects.all()
+    paginator = Paginator(asignatura_list, 25)
+
+    page = request.GET.get('page')
+    asignaturas = paginator.get_page(page)
+    
+    return render(request, 'academico/asignatura_list_view.html',  {'asignaturas': asignaturas})
 
 def carrera_detail(request, pk):
     return render(request, 'academico/carrera_detail.html')
