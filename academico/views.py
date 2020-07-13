@@ -12,6 +12,7 @@ from django.shortcuts import (
 
 from .models import (
     Asignatura,
+    Catedra,
     Alumno,
 )
 
@@ -36,8 +37,10 @@ def alumno_list(request):
     return render(request, 'academico/alumno_list.html', {'alumnos': alumnos})
 
 
-def asignatura_detail(request, pk):
-    return render(request, 'academico/asignatura_detail.html')
+def asignatura_detail_view(request, pk):
+    asignatura = get_object_or_404(Asignatura, pk=pk)
+    print("prueba")
+    return render(request, 'academico/asignatura_detail_view.html', {'asignatura': asignatura})
 
 def asignatura_list_view(request, *args, **kwargs):
     

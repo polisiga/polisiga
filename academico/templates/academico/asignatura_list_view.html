@@ -52,12 +52,12 @@
             <tbody>
               {% for asignatura in asignaturas %}
               <tr>
-                <td>{{ asignatura.id }}</td>
+                <td><a href="{% url 'academico:asignatura_detail_view' asignatura.id %}">{{ asignatura.id }}</a></td>
                 <td>{{ asignatura.codigo }}</td>
                 <td>{{ asignatura.siglas }}</td>
                 <td>{{ asignatura.nombre }}</td>
-                <td>{{ asignatura.carrera }}</td>
-                <td>{{ asignatura.departamento }}</td>
+                <td>{{ asignatura.carrera.siglas }}</td>
+                <td>{{ asignatura.departamento.siglas }}</td>
               </tr>
               {% endfor %}
             </tbody>

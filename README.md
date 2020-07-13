@@ -44,3 +44,4 @@ cat .\dumpdata\grupohomologas.json | python .\manage.py loaddata --format=json  
 cat .\dumpdata\asignatura.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\alumno.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\periodo.json | python .\manage.py loaddata --format=json  -
+cat .\dumpdata\docente.json | python .\manage.py loaddata --format=json  -
