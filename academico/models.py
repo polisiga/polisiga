@@ -54,6 +54,9 @@ class Asignatura(models.Model):
             x_str = ""
         return x_str
 
+    def get_absolute_url(self):
+        return f"{self.id}/"
+
     def __str__(self):
         return str(self.pk) + " - " + self.carrera.siglas + " - " + self.nombre
 

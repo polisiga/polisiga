@@ -18,7 +18,10 @@
   </form>
 </div>
 
-
+    <form method="get">
+        {{ asignatura_list.form.as_p }}
+        <input type="submit" />
+    </form>
 
 
 
@@ -50,7 +53,7 @@
               </tr>
             </thead>
             <tbody>
-              {% for asignatura in asignaturas %}
+              {% for asignatura in asignaturas_page %}
               <tr>
                 <td><a href="{% url 'academico:asignatura_detail_view' asignatura.id %}">{{ asignatura.id }}</a></td>
                 <td>{{ asignatura.codigo }}</td>
@@ -66,18 +69,18 @@
         <div class="card-footer">
           <div class="pagination">
             <span class="step-links">
-                {% if asignaturas.has_previous %}
+                {% if asignaturas_page.has_previous %}
                     <a href="?filter={{filter_val}}&page=1">&laquo; primera</a>
-                    <a href="?filter={{filter_val}}&page={{ asignaturas.previous_page_number }}">anterior</a>
+                    <a href="?filter={{filter_val}}&page={{ asignaturas_page.previous_page_number }}">anterior</a>
                 {% endif %}
 
                 <span class="current">
-                    Página {{ asignaturas.number }} de {{ asignaturas.paginator.num_pages }}.
+                    Página {{ asignaturas_page.number }} de {{ asignaturas_page.paginator.num_pages }}.
                 </span>
 
-                {% if asignaturas.has_next %}
-                    <a href="?filter={{filter_val}}&page={{ asignaturas.next_page_number }}">siguiente</a>
-                    <a href="?filter={{filter_val}}&page={{ asignaturas.paginator.num_pages }}">ultima &raquo;</a>
+                {% if asignaturas_page.has_next %}
+                    <a href="?filter={{filter_val}}&page={{ asignaturas_page.next_page_number }}">siguiente</a>
+                    <a href="?filter={{filter_val}}&page={{ asignaturas_page.paginator.num_pages }}">ultima &raquo;</a>
                 {% endif %}
             </span>
           </div>

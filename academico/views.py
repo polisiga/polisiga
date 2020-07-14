@@ -9,6 +9,19 @@ from django.shortcuts import (
     redirect,
     render,
 )
+from django_filters.views import FilterView
+from django_tables2 import (
+    SingleTableView,
+    SingleTableMixin
+)
+
+from .filters import (
+    AsignaturaFilter
+)
+
+from .tables import (
+    AsignaturaTable
+)
 
 from .models import (
     Asignatura,
@@ -37,6 +50,13 @@ def alumno_list(request):
     return render(request, 'academico/alumno_list.html', {'alumnos': alumnos})
 
 
+class AsignaturaTableView(SingleTableMixin, FilterView):
+    model = Asignatura
+    table_class = AsignaturaTable
+    template_name = 'academico/asignatura_table_view.html'
+
+    filterset_class = AsignaturaFilter
+
 def asignatura_detail_view(request, pk):
     asignatura = get_object_or_404(Asignatura, pk=pk)
     
@@ -44,18 +64,16 @@ def asignatura_detail_view(request, pk):
 
 def asignatura_list_view(request, *args, **kwargs):
     
-    filter_val = request.GET.get('filter', '')
-    if filter_val == '':
-        asignatura_list = Asignatura.objects.all()
-    else:
-        asignatura_list = Asignatura.objects.filter(nombre__icontains=filter_val)
 
-    paginator = Paginator(asignatura_list, 25)
+    asignatura_list = AsignaturaFilter(request.GET, queryset=Asignatura.objects.all())
+
+
+    paginator = Paginator(asignatura_list.qs, 25)
 
     page = request.GET.get('page')
-    asignaturas = paginator.get_page(page)
+    asignaturas_page = paginator.get_page(page)
     
-    return render(request, 'academico/asignatura_list_view.html',  {'asignaturas': asignaturas, 'filter_val': filter_val})
+    return render(request, 'academico/asignatura_list_view.html',  { 'asignaturas_page': asignaturas_page, 'asignatura_list': asignatura_list })
 
 def carrera_detail(request, pk):
     return render(request, 'academico/carrera_detail.html')
