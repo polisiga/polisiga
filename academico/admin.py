@@ -12,6 +12,7 @@ from .models import (
     Docente,
     Enfasis,
     GrupoHomologas,
+    Plan,
     Periodo,
     RegistroCatedra,
 
@@ -102,6 +103,17 @@ class GrupoHomologasAdmin(ImportExportModelAdmin):
 class PeriodoAdmin(ImportExportModelAdmin):
     pass
 
+class ContenidoInLine(admin.TabularInline):
+    model = Contenido
+
+@admin.register(Plan)
+class PlanAdmin(ImportExportModelAdmin):
+    autocomplete_fields = [
+        'asignatura',
+    ]
+    inlines = [
+        ContenidoInLine
+    ]
 
 @admin.register(RegistroCatedra)
 class RegistroCatedraAdmin(ImportExportModelAdmin):

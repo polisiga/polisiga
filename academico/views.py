@@ -39,7 +39,7 @@ def alumno_list(request):
 
 def asignatura_detail_view(request, pk):
     asignatura = get_object_or_404(Asignatura, pk=pk)
-    print("prueba")
+    
     return render(request, 'academico/asignatura_detail_view.html', {'asignatura': asignatura})
 
 def asignatura_list_view(request, *args, **kwargs):
