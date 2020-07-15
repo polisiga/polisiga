@@ -33,7 +33,7 @@ class AsignaturaResource(resources.ModelResource):
 
 @admin.register(Asignatura)
 class AsignaturaAdmin(ImportExportModelAdmin):
-    list_display = ('id', 'codigo','siglas','nombre')
+    list_display = ('id', 'codigo','siglas','nombre','carrera', 'departamento')
     search_fields = ('id', 'codigo','siglas','nombre')
     resource_class = AsignaturaResource
 

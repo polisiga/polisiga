@@ -28,15 +28,12 @@ class Asignatura(models.Model):
     siglas = models.CharField(null=True, max_length=10)
     nombre = models.CharField(max_length=100, null=True)
     carrera = models.ForeignKey('Carrera', on_delete=models.PROTECT, null=True)
-    departamento = models.ForeignKey(
-        'Departamento', null=True, on_delete=models.PROTECT)
-    enfasis = models.ForeignKey(
-        'Enfasis', on_delete=models.PROTECT, null=True, blank=True)
+    departamento = models.ForeignKey('Departamento', null=True, on_delete=models.PROTECT)
+    enfasis = models.ForeignKey('Enfasis', on_delete=models.PROTECT, null=True, blank=True)
     nivel = models.IntegerField(blank=True, null=True)
     semestre = models.IntegerField(blank=True, null=True)
     prerequisito = models.ManyToManyField('self', blank=True)
-    grupohomologas = models.ForeignKey(
-        'GrupoHomologas', blank=True, on_delete=models.PROTECT, null=True)
+    grupohomologas = models.ForeignKey('GrupoHomologas', blank=True, on_delete=models.PROTECT, null=True)
 
     def get_dpto_siglas(self):
         return self.departamento.siglas

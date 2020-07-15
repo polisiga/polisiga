@@ -11,4 +11,9 @@ class AsignaturaFilter(django_filters.FilterSet):
 
     class Meta:
         model = Asignatura
-        fields = ['nombre']
+        fields = [
+            'nombre',
+            'carrera',
+            'departamento',
+            'semestre'
+        ]
