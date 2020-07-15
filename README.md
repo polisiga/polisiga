@@ -7,7 +7,7 @@ Paquete que integra la plantilla AdminLTE mediante plantillas base para django.
 https://github.com/d-demirci/django-adminlte3
 https://github.com/ColorlibHQ/AdminLTE
 
-
+prueba
 
 # Comandos Utiles
 
