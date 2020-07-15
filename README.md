@@ -7,7 +7,7 @@ Paquete que integra la plantilla AdminLTE mediante plantillas base para django.
 https://github.com/d-demirci/django-adminlte3
 https://github.com/ColorlibHQ/AdminLTE
 
-
+prueba asd
 
 # Comandos Utiles
 
@@ -37,9 +37,11 @@ python manage.py dumpdata --indent 2 academico.periodo -o dumpdata/periodo.json
 
 
 
+
 cat .\dumpdata\departamento.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\carrera.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\grupohomologas.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\asignatura.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\alumno.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\periodo.json | python .\manage.py loaddata --format=json  -
+cat .\dumpdata\docente.json | python .\manage.py loaddata --format=json  -

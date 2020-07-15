@@ -12,6 +12,7 @@ from .models import (
     Docente,
     Enfasis,
     GrupoHomologas,
+    Plan,
     Periodo,
     RegistroCatedra,
 
@@ -32,7 +33,7 @@ class AsignaturaResource(resources.ModelResource):
 
 @admin.register(Asignatura)
 class AsignaturaAdmin(ImportExportModelAdmin):
-    list_display = ('id', 'codigo','siglas','nombre')
+    list_display = ('id', 'codigo','siglas','nombre','carrera', 'departamento')
     search_fields = ('id', 'codigo','siglas','nombre')
     resource_class = AsignaturaResource
 
@@ -102,6 +103,17 @@ class GrupoHomologasAdmin(ImportExportModelAdmin):
 class PeriodoAdmin(ImportExportModelAdmin):
     pass
 
+class ContenidoInLine(admin.TabularInline):
+    model = Contenido
+
+@admin.register(Plan)
+class PlanAdmin(ImportExportModelAdmin):
+    autocomplete_fields = [
+        'asignatura',
+    ]
+    inlines = [
+        ContenidoInLine
+    ]
 
 @admin.register(RegistroCatedra)
 class RegistroCatedraAdmin(ImportExportModelAdmin):

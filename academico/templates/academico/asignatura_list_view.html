@@ -1,0 +1,91 @@
+{% extends 'adminlte/base.html' %}
+
+
+
+{% block page_name %}Asignatura{% endblock %}
+
+{% block content %}
+
+
+<div class="box-tools">
+  <form method="get">
+  <div class="input-group input-group-sm hidden-xs" style="width: 150px;">
+    <input type="text" name="filter" class="form-control pull-right" placeholder="Search">
+    <div class="input-group-btn">
+      <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+    </div>
+  </div>
+  </form>
+</div>
+
+    <form method="get">
+        {{ asignatura_list.form.as_p }}
+        <input type="submit" />
+    </form>
+
+
+
+
+<div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Asignaturas</h3>
+          <div class="card-tools">
+            <div class="input-group input-group-sm" style="width: 150px;">
+              <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+              <div class="input-group-append">
+                <button type="submit" class="btn btn-default"><i class="fas fa-search"></i></button>
+              </div>
+            </div>
+          </div>
+        </div><!-- /.card-header -->
+        <div class="card-body table-responsive p-0">
+          <table class="table table-hover text-nowrap">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Codigo</th>
+                <th>Siglas</th>
+                <th>Nombre</th>
+                <th>Carrera</th>
+                <th>Departamento</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for asignatura in asignaturas_page %}
+              <tr>
+                <td><a href="{% url 'academico:asignatura_detail_view' asignatura.id %}">{{ asignatura.id }}</a></td>
+                <td>{{ asignatura.codigo }}</td>
+                <td>{{ asignatura.siglas }}</td>
+                <td>{{ asignatura.nombre }}</td>
+                <td>{{ asignatura.carrera.siglas }}</td>
+                <td>{{ asignatura.departamento.siglas }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div><!-- /.card-body -->
+        <div class="card-footer">
+          <div class="pagination">
+            <span class="step-links">
+                {% if asignaturas_page.has_previous %}
+                    <a href="?filter={{filter_val}}&page=1">&laquo; primera</a>
+                    <a href="?filter={{filter_val}}&page={{ asignaturas_page.previous_page_number }}">anterior</a>
+                {% endif %}
+
+                <span class="current">
+                    Página {{ asignaturas_page.number }} de {{ asignaturas_page.paginator.num_pages }}.
+                </span>
+
+                {% if asignaturas_page.has_next %}
+                    <a href="?filter={{filter_val}}&page={{ asignaturas_page.next_page_number }}">siguiente</a>
+                    <a href="?filter={{filter_val}}&page={{ asignaturas_page.paginator.num_pages }}">ultima &raquo;</a>
+                {% endif %}
+            </span>
+          </div>
+        </div><!-- /.card-footer -->
+      </div><!-- /.card -->
+    </div>
+  </div>
+{% endblock %}
