@@ -4,8 +4,23 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
+from django.contrib.auth import get_user_model
+
 
 User = settings.AUTH_USER_MODEL
+
+def es_docente(self):
+    print("Prueba")
+    try:
+        docente = self.docente
+        return True
+    except get_user_model().docente.RelatedObjectDoesNotExist:
+        return False
+
+    return False
+
+get_user_model().add_to_class('es_docente', es_docente)
+
 
 
 class Alumno(models.Model):
@@ -291,7 +306,8 @@ class Plan(models.Model):
 
 class RegistroCatedra(models.Model):
     """
-    sdkas
+    Validaciones:
+      - Docente, Catedra y fecha no se pueden repetir
     """
     fecha = models.DateField(null=True)
     hora_desde = models.TimeField(null=True)
