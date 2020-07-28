@@ -18,4 +18,5 @@
         "editor.detectIndentation":false
     },
     "emmet.includeLanguages": {"django-html": "html"},
+    "python.linting.pylintArgs": ["--load-plugins", "pylint_django"],
 }

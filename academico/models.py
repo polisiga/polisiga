@@ -1,25 +1,24 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import m2m_changed
 from django.urls import reverse
-from django.utils import timezone
-
 from django.contrib.auth import get_user_model
 
 
 User = settings.AUTH_USER_MODEL
 
-def es_docente(self):
-    print("Prueba")
-    try:
-        docente = self.docente
-        return True
-    except get_user_model().docente.RelatedObjectDoesNotExist:
-        return False
+# def es_docente(self):
+#     print("Prueba")
+#     try:
+#         docente = self.docente
+#         return True
+#     except get_user_model().docente.RelatedObjectDoesNotExist:
+#         return False
 
-    return False
+#     return False
 
-get_user_model().add_to_class('es_docente', es_docente)
+# get_user_model().add_to_class('es_docente', es_docente)
 
 
 
@@ -30,10 +29,10 @@ class Alumno(models.Model):
     nombre = models.CharField(max_length=30)
     apellido = models.CharField(max_length=30)
     correo = models.EmailField(unique=True,blank=True)
-    
+
     def __str__(self):
         return self.nombre + " "  + self.apellido
-        
+
     def get_absolute_url(self):
         return reverse('academico:alumno_detail', kwargs={'pk': self.pk})
 
@@ -140,12 +139,18 @@ class Catedra(models.Model):
         """
         El nombre de la catedra es el nombre de la primera asignatura
         """
-        try:
-            result = str(self.asignaturas.all().first()) + \
-                ' - ' + self.seccion + ' - ' + str(self.periodo)
-        except:
-            result = 'sin nombre'
-        return result
+        result = ''
+        if self.asignaturas.all().count() == 1:
+            result = str(self.pk) + ' - ' + \
+                str(self.asignaturas.first().carrera.siglas) + \
+                ':' +  str(self.asignaturas.all().first().nombre)
+        elif self.asignaturas.all().count() > 1:
+            for idx, asignatura in enumerate(self.asignaturas.all()):
+                if idx == 0:
+                    result = str(self.pk) + ' - ' + str(asignatura.carrera.siglas) + ':' +  str(asignatura.nombre) 
+                else:
+                    result = result + '\n      - ' + str(asignatura.carrera.siglas) + ':'  +  str(asignatura.nombre)
+        return result + ' - ' + self.seccion + ' - ' + str(self.periodo)
 
     def homologas(self):
         """
@@ -162,6 +167,15 @@ class Catedra(models.Model):
     def homologas_str(self):
         return '-'.join([str(i) for i in self.homologas()])
 
+    def lista_registros(self):
+        '''
+        Nos trae una lista de fechas, en un rango, con un registro de catedra
+        enlazado si es que existe en esta fecha
+
+        Parametros:
+          desde y hasta: 
+        '''
+
     def plan_activo(self):
         """
         El plan activo es el plan con el campo año(year) mas reciente
@@ -173,31 +187,21 @@ class Catedra(models.Model):
 
         return o
 
-    # def clean(self):
-    #     try:
-    #         grupo_h = self.asignaturas.all().first().grupohomologas.id
-
-    #         asig_count = self.asignaturas.all().count()
-    #         asig_h = self.asignaturas.all().filter(grupohomologas__id=grupo_h).count()
-
-    #     except:
-    #         asig_h, asig_count = 0
-    #     if not asig_count == asig_h:
-    #         raise ValidationError(
-    #             'Todas las asignaturas deben estar en el mismo grupo de homologas.')
-
-    def save(self, *args, **kwargs):
-        # self.slug = slugify(self.headline)
-        print("saving Catedra")
-
-        super(Catedra, self).save(*args, **kwargs)
-
     def get_absolute_url(self):
         return reverse('academico:catedra-detail', kwargs={'pk': self.pk})
 
     def __str__(self):
         return self.nombre()
 
+def catedra_asignaturas_changed(sender, *args, **kwargs):
+    if kwargs['action'] == 'pre_add':
+        if kwargs['instance'].asignaturas.count() > 1:
+            gh = kwargs['instance'].asignaturas.first().grupohomologas.pk
+            for pk_new in kwargs['pk_set']:
+                if gh != Asignatura.objects.get(pk=pk_new).grupohomologas:
+                    raise ValidationError('Asignaturas no homologas.')
+
+m2m_changed.connect(catedra_asignaturas_changed, sender=Catedra.asignaturas.through)
 
 class Contenido(models.Model):
     plan = models.ForeignKey('Plan', on_delete=models.PROTECT)
@@ -216,6 +220,9 @@ class Departamento(models.Model):
 
 
 class Docente(models.Model):
+    '''
+    registrocatedra_set: Registros de Catedra de este docente
+    '''
     user = models.OneToOneField(User, on_delete=models.PROTECT, null=True)
     cedula = models.BigIntegerField(unique=True)
     titulo = models.CharField(max_length=10)
@@ -225,8 +232,7 @@ class Docente(models.Model):
     nombre = models.CharField(max_length=30)
     categoria_docente = models.IntegerField(null=True)
 
-    def registros(self):
-        return RegistroCatedra.object.all().filter(docente__id=self.id)
+
 
     def __str__(self):
         return str(self.id) + ' - ' + self.apellido + ', ' + self.nombre
@@ -336,6 +342,15 @@ class RegistroCatedra(models.Model):
     med_prog = models.BooleanField("Programas utilitarios", default=False)
     med_otros = models.TextField(
         "Especificar otros medios auxiliares", default="", blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['fecha', 'catedra', 'docente'],
+                name='unique_registrocatedra'
+            ),
+        ]
+
 
     def get_absolute_url(self):
 

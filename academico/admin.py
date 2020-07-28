@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import User
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
@@ -18,6 +20,21 @@ from .models import (
 
 )
 
+from .forms import (
+    CatedraForm
+)
+
+class DocenteInline(admin.StackedInline):
+    model = Docente
+    can_delete = False
+
+class UserAdmin(BaseUserAdmin):
+    inlines = [DocenteInline]
+
+admin.site.unregister(User)
+
+admin.site.register(User, UserAdmin)
+
 class AlumnoResource(resources.ModelResource):
     class Meta:
         model = Alumno
@@ -33,7 +50,7 @@ class AsignaturaResource(resources.ModelResource):
 
 @admin.register(Asignatura)
 class AsignaturaAdmin(ImportExportModelAdmin):
-    list_display = ('id', 'codigo','siglas','nombre','carrera', 'departamento')
+    list_display = ('id', 'codigo','grupohomologas','siglas','nombre','carrera', 'departamento')
     search_fields = ('id', 'codigo','siglas','nombre')
     resource_class = AsignaturaResource
 
@@ -43,10 +60,18 @@ class CarreraAdmin(ImportExportModelAdmin):
 
 @admin.register(Catedra)
 class CatedraAdmin(ImportExportModelAdmin):
+    form = CatedraForm
+
     autocomplete_fields = [
         'docentes',
-        'asignaturas'
+        
     ]
+
+    def get_form(self, request, obj = None, **kwargs):
+        form = super(CatedraAdmin, self).get_form(request, **kwargs)
+        #qs = Asignatura.objects.filter(pk=3)
+        #form.base_fields['asignaturas'].queryset = qs
+        return form
 
 @admin.register(Contenido)
 class ContenidoAdmin(ImportExportModelAdmin):

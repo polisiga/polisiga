@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'import_export',
     'django_filters',
     'django_tables2',
+    'crispy_forms',
     'bootstrap4',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -132,3 +133,5 @@ STATIC_ROOT = '/opt/polisiga/static'
 LOGIN_REDIRECT_URL = 'academico/'
 
 LOGOUT_REDIRECT_URL = '/'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

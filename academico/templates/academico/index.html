@@ -2,20 +2,20 @@
 
 
 
-{% block page_name %}Tablero {% if user.es_docente %}es docente{% endif %}{% endblock %}
+{% block page_name %}Tablero {% if user.docente %}es docente{% endif %}{% if user.alumno %}es docente{% endif %}{% endblock %}
 
 {% block content %}
 
-    <!-- Si es docente mostramos lista de catedras -->
-    {% if user.es_docente %}
+    <!-- Si tiene perfil docente se muestra lista de catedras -->
+    {% if user.docente %}
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Asignaturas Activas</h3>
         </div>
         <div class="card-body">
           <ul>
-          {% for catedra in catedras %}
-            <li><a href="{% url 'academico:catedra_detail' catedra.pk %}">{{ catedra }}</a></li>
+          {% for catedra in user.docente.catedra_set.all %}
+            <li><a href="{% url 'academico:catedra_detail_view' catedra.pk %}">{{ catedra }}</a></li>
           {% endfor %}
           </ul>
         </div><!-- /.card-body -->
@@ -23,6 +23,8 @@
             Footer
         </div><!-- /.card-footer-->
     </div><!-- /.card -->
+    {% else %}
+      <p>Sin perfil Docente</p>
     {% endif %}
 {% endblock %}
 

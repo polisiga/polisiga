@@ -19,6 +19,9 @@ from .filters import (
     AsignaturaFilter
 )
 
+from .forms import (
+    RegistroCatedraForm
+)
 from .tables import (
     AsignaturaTable
 )
@@ -27,6 +30,7 @@ from .models import (
     Asignatura,
     Catedra,
     Alumno,
+    RegistroCatedra,
 )
 
 @login_required
@@ -81,8 +85,9 @@ def carrera_detail(request, pk):
 def carrera_list(request):
     return render(request, 'academico/carrera_list.html')   
 
-def catedra_detail(request, pk):
-    return render(request, 'academico/catedra_detail.html')
+def catedra_detail_view(request, pk):
+    catedra = get_object_or_404(Catedra, pk=pk)
+    return render(request, 'academico/catedra_detail_view.html', {'catedra': catedra})
 
 def catedra_list(request):
     return render(request, 'academico/catedra_list.html')
@@ -135,8 +140,24 @@ def plan_detail(request, pk):
 def plan_list(request):
     return render(request, 'academico/plan_list.html')
 
-def registro_catedra_detail(request, pk):
-    return render(request, 'academico/registro_catedra_detail.html')
+def registrocatedra_detail_view(request, pk):
+    registrocatedra = get_object_or_404(RegistroCatedra, pk=pk)
+    return render(request, 'academico/registrocatedra_detail_view.html',{'registrocatedra': registrocatedra})
 
-def registro_catedra_list(request):
-    return render(request, 'academico/registro_catedra_list.html')
+def registrocatedra_list_view(request):
+    
+    return render(request, 'academico/registrocatedra_list_view.html')
+
+def registrocatedra_edit_view(request, pk):
+    registrocatedra = get_object_or_404(RegistroCatedra, pk=pk)
+    if request.method == 'POST':
+        form = RegistroCatedraForm(request.POST, instance=registrocatedra)
+        if form.is_valid():
+            post = form.save(commit=False)
+
+            post.save()
+            return redirect('academico:registrocatedra_detail_view', pk=registrocatedra.pk)
+    else:
+        form = RegistroCatedraForm(instance=registrocatedra)
+    return render(request, 'academico/registrocatedra_edit_view.html', {'form': form})
+        

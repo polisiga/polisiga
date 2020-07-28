@@ -1,0 +1,166 @@
+{% extends 'adminlte/base.html' %}
+
+
+
+{% block page_name %}Registro de Catedra #{{ registrocatedra }}{% endblock %}
+
+{% block content %}
+
+<!-- Default card -->
+  <div class="card">
+      <div class="card-header with-border">
+          <h3 class="card-title">Detalles</h3>
+      </div>
+      <div class="card-body">
+        <dl class="row">
+          <dt class="col-sm-4">Fecha: </dt>
+          <dd class="col-sm-8">{{ registrocatedra.fecha }}</dd>
+          <dt class="col-sm-4">Hora Entrada: </dt>
+          <dd class="col-sm-8">{{ registrocatedra.hora_desde }}</dd>
+          <dt class="col-sm-4">Hora Salida: </dt>
+          <dd class="col-sm-8">{{ registrocatedra.hora_hasta }}</dd>
+          <dt class="col-sm-4">Departamento: </dt>
+          <dd class="col-sm-8"></dd>
+          <dt class="col-sm-4">Asignatura: </dt>
+          <dd class="col-sm-8">{{ registrocatedra.catedra }}</dd>
+          <dt class="col-sm-4">Docente: </dt>
+          <dd class="col-sm-8">{{ registrocatedra.docente }}</dd>
+        </dl>
+      </div><!-- /.card-body -->
+  </div><!-- /.card -->
+
+  <div class="card">
+    <div class="card-header with-border">
+      <h3 class="card-title">Clase Desarrollada</h3>
+    </div><!-- /.card-header -->
+    <div class="card-body">
+      <form action="">
+        <div class="row">
+          <div class="form-check ml-2">
+            <input class="form-check-input" type="checkbox" disabled 
+              {% if registrocatedra.clase_teoria %}checked{% endif %}>
+            <label class="form-check-label">Teoría</label>
+          </div><!-- /.form-check -->
+          <div class="form-check ml-2">
+            <input class="form-check-input" type="checkbox" disabled 
+              {% if registrocatedra.clase_practica %}checked{% endif %}>
+            <label class="form-check-label">Práctica</label>
+          </div><!-- /.form-check -->
+          <div class="form-check ml-2">
+            <input class="form-check-input" type="checkbox" disabled
+              {% if registrocatedra.clase_laboratorio %}checked{% endif %}>
+            <label class="form-check-label">Laboratorio</label>
+          </div><!-- /.form-check -->
+          <div class="form-check ml-2">
+            <input class="form-check-input" type="checkbox" disabled
+              {% if registrocatedra.clase_taller %}checked{% endif %}>
+            <label class="form-check-label">Taller</label>
+          </div><!-- /.form-check -->
+        </div><!-- /.row -->
+        <dl>
+          <dt>Contenido</dt>
+          <dd>
+            <ul>
+              {% for contenido in registrocatedra.contenidos_desarrollados.all %}
+                <li>{{ contenido }}</li>
+              {% endfor %}
+            </ul>
+          </dd>
+        </dl>
+        <dl>
+          <dt>Contenido (observaciones):</dt>
+          <dd>{{ registrocatedra.contenidos_observacion }}</dd>
+        </dl>
+      </form>
+    </div><!-- /.card-body -->
+  </div><!-- /.card -->
+
+  <div class="card">
+    <div class="card-header with-border">
+      <h3 class="card-title">Metodología</h3>
+    </div><!-- /.card-header -->
+    <div class="card-body">
+      <form action="">
+        <div class="row">
+          <div class="form-check ml-2">
+            <input class="form-check-input" type="checkbox" disabled 
+              {% if registrocatedra.met_exposicion %}checked{% endif %}>
+            <label class="form-check-label">Exposición</label>
+          </div><!-- /.form-check -->
+          <div class="form-check ml-2">
+            <input class="form-check-input" type="checkbox" disabled 
+              {% if registrocatedra.met_trabajo_ind_grp %}checked{% endif %}>
+            <label class="form-check-label">Trabajo individual y/o Grupal</label>
+          </div><!-- /.form-check -->
+          <div class="form-check ml-2">
+            <input class="form-check-input" type="checkbox" disabled
+              {% if registrocatedra.met_res_ejercicios %}checked{% endif %}>
+            <label class="form-check-label">Resolución de ejercicios</label>
+          </div><!-- /.form-check -->
+          <div class="form-check ml-2">
+            <input class="form-check-input" type="checkbox" disabled
+              {% if registrocatedra.met_eval %}checked{% endif %}>
+            <label class="form-check-label">Evaluación</label>
+          </div><!-- /.form-check -->
+        </div><!-- /.row -->
+        <dl>
+          <dt>Otras metodologías:</dt>
+          <dd>{{ registrocatedra.met_otros }}</dd>
+        </dl>
+      </form>
+    </div><!-- /.card-body -->
+  </div><!-- /.card -->
+
+  <div class="card">
+    <div class="card-header with-border">
+      <h3 class="card-title">Medios Auxiliares Empleados</h3>
+    </div><!-- /.card-header -->
+    <div class="card-body">
+      <form action="">
+        <div class="row">
+          <div class="form-check ml-2">
+            <input class="form-check-input" type="checkbox" disabled 
+              {% if registrocatedra.med_pizarra %}checked{% endif %}>
+            <label class="form-check-label">Pizarra</label>
+          </div><!-- /.form-check -->
+          <div class="form-check ml-2">
+            <input class="form-check-input" type="checkbox" disabled 
+              {% if registrocatedra.med_video %}checked{% endif %}>
+            <label class="form-check-label">Vídeo</label>
+          </div><!-- /.form-check -->
+          <div class="form-check ml-2">
+            <input class="form-check-input" type="checkbox" disabled 
+              {% if registrocatedra.med_pc %}checked{% endif %}>
+            <label class="form-check-label">PC - Proyector Multimedia</label>
+          </div><!-- /.form-check -->
+          <div class="form-check ml-2">
+            <input class="form-check-input" type="checkbox" disabled 
+              {% if registrocatedra.med_equip %}checked{% endif %}>
+            <label class="form-check-label">Equipos de Laboratorio</label>
+          </div><!-- /.form-check -->
+          <div class="form-check ml-2">
+            <input class="form-check-input" type="checkbox" disabled 
+              {% if registrocatedra.med_bibli %}checked{% endif %}>
+            <label class="form-check-label">Mat. Bibliograficos</label>
+          </div><!-- /.form-check -->
+          <div class="form-check ml-2">
+            <input class="form-check-input" type="checkbox" disabled 
+              {% if registrocatedra.med_prog %}checked{% endif %}>
+            <label class="form-check-label">Programas Utilitarios</label>
+          </div><!-- /.form-check -->
+        </div><!-- /.row -->
+        <dl>
+          <dt>Otros medios:</dt>
+          <dd>{{ registrocatedra.met_otros }}</dd>
+        </dl>
+      </form>
+    </div><!-- /.card-body -->
+  </div><!-- /.card -->
+
+  <div class="row">
+    <div class="col-12">
+      <a href="#" class="btn btn-secondary">Cancelar</a>
+      <a href="{% url 'academico:registrocatedra_edit_view' registrocatedra.pk %}" class="btn btn-primary float-right">Editar</a>
+    </div>
+  </div>
+{% endblock %}
