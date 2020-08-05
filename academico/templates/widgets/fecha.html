@@ -1,0 +1,9 @@
+<div id="div_{{ widget.attrs.id }}" class="form-group">
+  <label {% if widget.required %}class=" requiredField"{% endif %} for="{{ widget.attrs.id }}">{{ widget.name|title }}{% if widget.required %}<span class="asteriskField">*</span>{% endif %}</label>
+  <div id="input_group_{{ widget.attrs.id }}" class="input-group date" data-target-input="nearest">
+    <input type="{{ widget.type }}" data-target="#input_group_{{ widget.attrs.id }}" class="form-control" name="{{ widget.name }}"{% if widget.value != None %}  value="{{ widget.value|stringformat:'s' }}"{% endif %}{% include "django/forms/widgets/attrs.html" %}>
+    <div class="input-group-append" data-target="#input_group_{{ widget.attrs.id }}" data-toggle="datetimepicker">
+      <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+    </div>
+  </div>
+</div>

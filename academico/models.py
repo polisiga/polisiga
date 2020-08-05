@@ -207,6 +207,9 @@ class Contenido(models.Model):
     plan = models.ForeignKey('Plan', on_delete=models.PROTECT)
     titulo = models.CharField(max_length=100)
 
+    class Meta:
+        ordering = ['titulo']
+
     def __str__(self):
         return self.titulo
 
@@ -351,6 +354,8 @@ class RegistroCatedra(models.Model):
             ),
         ]
 
+    def plan_activo(self):
+        return self.catedra.asignaturas.first().plan_set.all().order_by('-year').first()
 
     def get_absolute_url(self):
 

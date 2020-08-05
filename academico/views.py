@@ -9,6 +9,9 @@ from django.shortcuts import (
     redirect,
     render,
 )
+from django.utils import timezone
+from datetime import timedelta
+from datetime import date
 from django_filters.views import FilterView
 from django_tables2 import (
     SingleTableView,
@@ -29,12 +32,14 @@ from .tables import (
 from .models import (
     Asignatura,
     Catedra,
+    Contenido,
     Alumno,
     RegistroCatedra,
 )
 
 @login_required
 def index(request):
+
 
     return render(request, 'academico/index.html')
 
@@ -44,7 +49,7 @@ def index_redirect(request):
 
 def alumno_detail(request, pk):
     alumno = get_object_or_404(Alumno, pk=pk)
-    
+
     return render(request, 'academico/alumno_detail.html', {'alumno': alumno})
 
 @login_required
@@ -63,11 +68,11 @@ class AsignaturaTableView(SingleTableMixin, FilterView):
 
 def asignatura_detail_view(request, pk):
     asignatura = get_object_or_404(Asignatura, pk=pk)
-    
+
     return render(request, 'academico/asignatura_detail_view.html', {'asignatura': asignatura})
 
 def asignatura_list_view(request, *args, **kwargs):
-    
+
 
     asignatura_list = AsignaturaFilter(request.GET, queryset=Asignatura.objects.all())
 
@@ -76,8 +81,12 @@ def asignatura_list_view(request, *args, **kwargs):
 
     page = request.GET.get('page')
     asignaturas_page = paginator.get_page(page)
-    
-    return render(request, 'academico/asignatura_list_view.html',  { 'asignaturas_page': asignaturas_page, 'asignatura_list': asignatura_list })
+
+    return render(request, 'academico/asignatura_list_view.html',
+                  {
+                      'asignaturas_page': asignaturas_page,
+                      'asignatura_list': asignatura_list,
+                  })
 
 def carrera_detail(request, pk):
     return render(request, 'academico/carrera_detail.html')
@@ -85,7 +94,9 @@ def carrera_detail(request, pk):
 def carrera_list(request):
     return render(request, 'academico/carrera_list.html')   
 
+# TODO: Validar que dias podria cargar un registrocatedra
 def catedra_detail_view(request, pk):
+
     catedra = get_object_or_404(Catedra, pk=pk)
     return render(request, 'academico/catedra_detail_view.html', {'catedra': catedra})
 
@@ -145,7 +156,7 @@ def registrocatedra_detail_view(request, pk):
     return render(request, 'academico/registrocatedra_detail_view.html',{'registrocatedra': registrocatedra})
 
 def registrocatedra_list_view(request):
-    
+
     return render(request, 'academico/registrocatedra_list_view.html')
 
 def registrocatedra_edit_view(request, pk):
@@ -153,11 +164,32 @@ def registrocatedra_edit_view(request, pk):
     if request.method == 'POST':
         form = RegistroCatedraForm(request.POST, instance=registrocatedra)
         if form.is_valid():
-            post = form.save(commit=False)
-
-            post.save()
+            form.save()
+            #form.save_m2m()
             return redirect('academico:registrocatedra_detail_view', pk=registrocatedra.pk)
     else:
         form = RegistroCatedraForm(instance=registrocatedra)
+        form.fields['contenidos_desarrollados'].queryset = Contenido.objects.filter(
+            plan=registrocatedra.plan_activo())
     return render(request, 'academico/registrocatedra_edit_view.html', {'form': form})
+
+def registrocatedra_create_view(request, catedra_pk):
+    if request.method == "POST":
+        form = RegistroCatedraForm(request.POST)
+        if form.is_valid():
+            registrocatedra = form.save(commit=False)
+            #post.author = request.user
+            #post.published_date = timezone.now()
+            registrocatedra.save()
+            form.save_m2m()
+            return redirect('registrocatedra_detail_view', pk=registrocatedra.pk)
+    else:
+        form = RegistroCatedraForm()
         
+        form.fields['catedra'].initial = catedra_pk
+        form.fields['catedra'].widget.attrs['disabled'] = True
+
+        form.fields['docente'].initial = request.user.docente.pk
+        form.fields['docente'].widget.attrs['disabled'] = True
+
+    return render(request, 'academico/registrocatedra_create_view.html', {'form': form})

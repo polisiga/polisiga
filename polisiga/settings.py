@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django_filters',
     'django_tables2',
     'crispy_forms',
+    'tempus_dominus',
     'bootstrap4',
+    'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -135,3 +137,5 @@ LOGIN_REDIRECT_URL = 'academico/'
 LOGOUT_REDIRECT_URL = '/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+TEMPUS_DOMINUS_INCLUDE_ASSETS = False

@@ -5,8 +5,10 @@
 
 
 {% block extra_head %}
+
 <link rel="stylesheet" type="text/css" href="{% static 'admin-lte/plugins/select2/css/select2.min.css' %}">
 <link rel="stylesheet" type="text/css" href="{% static 'admin-lte/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'admin-lte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
 
 {% endblock %}
 
@@ -26,7 +28,8 @@
     </div><!-- /.card-header -->
     <div class="card-body">
       <div class="form-row">
-        {{ form.fecha|as_crispy_field }}
+      
+        {{ form.fecha }}
         {{ form.hora_desde|as_crispy_field }}
         {{ form.hora_hasta|as_crispy_field }}
         {{ form.catedra|as_crispy_field }}
@@ -82,18 +85,17 @@
 
 {% endblock %}
 
+{{ form.media }}
 
 {% block extra_js %}
-
-  <script src="{% static 'admin-lte/plugins/select2/js/select2.full.min.js' %}"></script>
-
   <script type="text/javascript">
     $(document).ready(function() {
-      $('.selectmultiple').select2({
-        theme: 'bootstrap4'
-      });
+      $('#input_group_id_fecha').datetimepicker({
+        format: 'L',
+        locale: 'es'
+      });   
+      $('.selectmultiple').select2({theme: 'bootstrap4'});             
     });
   </script>
-
 {% endblock %}
 
