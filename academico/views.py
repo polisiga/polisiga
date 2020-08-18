@@ -32,8 +32,10 @@ from .tables import (
 from .models import (
     Asignatura,
     Catedra,
+    Docente,
     Contenido,
     Alumno,
+    Plan,
     RegistroCatedra,
 )
 
@@ -174,22 +176,33 @@ def registrocatedra_edit_view(request, pk):
     return render(request, 'academico/registrocatedra_edit_view.html', {'form': form})
 
 def registrocatedra_create_view(request, catedra_pk):
+    
+    catedra = Catedra.objects.get(pk=catedra_pk)
+    plan = catedra.get_plan()
     if request.method == "POST":
         form = RegistroCatedraForm(request.POST)
         if form.is_valid():
             registrocatedra = form.save(commit=False)
             #post.author = request.user
             #post.published_date = timezone.now()
+            #registrocatedra.catedra = catedra_pk
+            #registrocatedra.docente = request.user.docente.pk
             registrocatedra.save()
             form.save_m2m()
-            return redirect('registrocatedra_detail_view', pk=registrocatedra.pk)
+            return redirect('academico:registrocatedra_detail_view', pk=registrocatedra.pk)
     else:
         form = RegistroCatedraForm()
         
         form.fields['catedra'].initial = catedra_pk
-        form.fields['catedra'].widget.attrs['disabled'] = True
+        form.fields['catedra'].queryset = Catedra.objects.filter(pk=catedra_pk)
+        #form.fields['catedra'].widget.attrs['disabled'] = True
 
+        
         form.fields['docente'].initial = request.user.docente.pk
-        form.fields['docente'].widget.attrs['disabled'] = True
+        form.fields['docente'].queryset = Docente.objects.filter(pk=request.user.docente.pk)
+        #form.fields['docente'].widget.attrs['disabled'] = True
+
+        form.fields['contenidos_desarrollados'].queryset = Contenido.objects.filter(
+            plan=catedra.get_plan())
 
     return render(request, 'academico/registrocatedra_create_view.html', {'form': form})
