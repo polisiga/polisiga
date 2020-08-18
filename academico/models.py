@@ -190,6 +190,15 @@ class Catedra(models.Model):
     def get_absolute_url(self):
         return reverse('academico:catedra-detail', kwargs={'pk': self.pk})
 
+
+    def get_plan(self):
+        '''
+        Si la primera asignatura tiene grupohomologas entonces trae el
+        plan de la asignatura_principal del GrupoHomologas
+        '''
+        
+        return self.asignaturas.first().plan_set.first()
+
     def __str__(self):
         return self.nombre()
 
@@ -253,6 +262,7 @@ class Enfasis(models.Model):
 
 
 class GrupoHomologas(models.Model):
+    asignatura_primaria = models.ForeignKey(Asignatura, null=True, on_delete=models.PROTECT, related_name='asignatura_primaria')
     descripcion = models.CharField(max_length=50)
 
 
@@ -301,6 +311,12 @@ class Plan(models.Model):
         'Asignatura', on_delete=models.PROTECT, null=True)
     year = models.IntegerField('Año', default=0)
 
+
+    def from_catedra(self, catedra_pk):
+        #asignatura = Catedra.objects.get
+        plan_pk = Plan.objects.filter(asignatura=9)
+        return plan_pk
+
     class Meta:
         unique_together = ('asignatura', 'year')
 
@@ -321,8 +337,8 @@ class RegistroCatedra(models.Model):
     fecha = models.DateField(null=True)
     hora_desde = models.TimeField(null=True)
     hora_hasta = models.TimeField(null=True)
-    catedra = models.ForeignKey('Catedra', on_delete=models.PROTECT, null=True)
-    docente = models.ForeignKey('Docente', on_delete=models.PROTECT, null=True)
+    catedra = models.ForeignKey('Catedra', on_delete=models.PROTECT)
+    docente = models.ForeignKey('Docente', on_delete=models.PROTECT)
     clase_teoria = models.BooleanField('Teoria', default=False)
     clase_practica = models.BooleanField('Practica', default=False)
     clase_laboratorio = models.BooleanField('Laborat.', default=False)
@@ -336,7 +352,8 @@ class RegistroCatedra(models.Model):
     met_res_ejercicios = models.BooleanField(
         "Resolucion de ejercicios", default=False)
     met_eval = models.BooleanField("Evaluacion", default=False)
-    met_otros = models.TextField("Otros metodos", null=True, blank=True)
+    met_otros = models.TextField(
+        "Especificar otros metodos utilizados", null=True, blank=True)
     med_pizarra = models.BooleanField("Pizarra", default=False)
     med_video = models.BooleanField("Video", default=False)
     med_pc = models.BooleanField("PC - Proyector Multimedia", default=False)
