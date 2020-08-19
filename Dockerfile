@@ -1,31 +1,18 @@
-# pull official base image
 FROM python:3.7-alpine
 
-# set work directory
-WORKDIR /app
-
-# set environment variables
+# Prevents Python from writing pyc files to disc
 ENV PYTHONDONTWRITEBYTECODE 1
+# Prevents Python from buffering stdout and stderr
 ENV PYTHONUNBUFFERED 1
-ENV DEBUG 0
 
-# install psycopg2
+# install psycopg2 dependencies
 RUN apk update \
-    && apk add --virtual build-deps gcc python3-dev musl-dev \
-    && apk add postgresql-dev \
-    && pip install psycopg2 \
-    && apk del build-deps
+    && apk add postgresql-dev gcc python3-dev musl-dev
 
-# install dependencies
-COPY ./requirements.txt .
+RUN mkdir /code
+
+WORKDIR /code
+COPY requirements.txt /code/
 RUN pip install -r requirements.txt
 
-# copy project
-COPY . .
-
-# add and run as non-root user
-RUN adduser -D polisiga
-USER polisiga
-
-# run gunicorn
-CMD gunicorn polisiga.wsgi:application --bind 0.0.0.0:8000
+COPY . /code/

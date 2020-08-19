@@ -34,7 +34,7 @@ python manage.py dumpdata --indent 2 academico.periodo -o dumpdata/periodo.json
 
 
 
-
+# para windows 
 cat .\dumpdata\departamento.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\carrera.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\grupohomologas.json | python .\manage.py loaddata --format=json  -
@@ -42,3 +42,19 @@ cat .\dumpdata\asignatura.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\alumno.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\periodo.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\docente.json | python .\manage.py loaddata --format=json  -
+
+# para linux
+cat dumpdata/departamento.json | python manage.py loaddata --format=json  -
+cat dumpdata/carrera.json | python manage.py loaddata --format=json  -
+cat dumpdata/grupohomologas.json | python manage.py loaddata --format=json  -
+cat dumpdata/asignatura.json | python manage.py loaddata --format=json  -
+cat dumpdata/alumno.json | python manage.py loaddata --format=json  -
+cat dumpdata/periodo.json | python manage.py loaddata --format=json  -
+cat dumpdata/docente.json | python manage.py loaddata --format=json  -
+
+# para inicializar con docker
+
+docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py createsuperuser
+
+

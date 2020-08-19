@@ -88,7 +88,7 @@ DATABASES = {
         'NAME': 'polisiga',
         'USER': 'polisiga',
         'PASSWORD': 'polisiga',
-        'HOST': 'localhost',
+        'HOST': 'db',
         'PORT': '',
     }
 }
