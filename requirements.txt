@@ -12,3 +12,4 @@ django-widget-tweaks==1.4.8
 django-tempus-dominus==5.1.2.13
 django-dotenv==1.4.2
 gunicorn==20.0.4
+django-allauth==0.42.0

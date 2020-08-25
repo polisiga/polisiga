@@ -11,6 +11,7 @@ urlpatterns = [
     path('', index_redirect),
     path('academico/',include('academico.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/', include('allauth.urls')),
     path('admin/', admin.site.urls),
 ]
 
