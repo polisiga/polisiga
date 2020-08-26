@@ -2,15 +2,18 @@
 
 
 
-{% block page_name %}Tablero {% if user.docente %}es docente{% endif %}{% if user.alumno %}es docente{% endif %}{% endblock %}
+{% block page_name %}Tablero {% endblock %}
 
 {% block content %}
 
     <!-- Si tiene perfil docente se muestra lista de catedras -->
+    
+    {% if perms.registrocatedra.can_list_own %}puede listar sus catedras {% endif %}
+    
     {% if user.docente %}
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Asignaturas Activas</h3>
+            <h3 class="card-title">Mis Asignaturas Activas</h3>
         </div>
         <div class="card-body">
           <ul>

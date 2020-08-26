@@ -371,7 +371,8 @@ class RegistroCatedra(models.Model):
             ),
         ]
         permissions = [
-            ("can_add_own","Puede añadir sus Registros de Catedra propios"),
+            ("can_list_own", "Puede listar propios"),
+            ("can_add_own","Puede añadir propios"),
         ]
     def plan_activo(self):
         return self.catedra.asignaturas.first().plan_set.all().order_by('-year').first()
