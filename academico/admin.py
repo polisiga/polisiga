@@ -64,6 +64,7 @@ class CatedraAdmin(ImportExportModelAdmin):
 
     autocomplete_fields = [
         'docentes',
+        'asignaturas'
         
     ]
 
@@ -86,6 +87,10 @@ class DocenteAdmin(ImportExportModelAdmin):
     search_fields = [
         'nombre',
         'apellido'
+    ]
+    autocomplete_fields = [
+        'user',
+        
     ]
 
 class AsignaturaInLine(admin.TabularInline):
