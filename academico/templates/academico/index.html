@@ -8,14 +8,32 @@
 
     <!-- Si tiene perfil docente se muestra lista de catedras -->
     
-    {% if perms.registrocatedra.can_list_own %}puede listar sus catedras {% endif %}
-    
-    {% if user.docente %}
-    <div class="card">
+    {% if perms.academico.view_own_catedra %}
+      <div class="card">
         <div class="card-header">
             <h3 class="card-title">Mis Asignaturas Activas</h3>
         </div>
         <div class="card-body">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Asignatura</th>
+                <th scope="col">Seccion</th>
+                <th scope="col">Carrera</th>
+                <th scope="col">Periodo</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">8</th>
+                <td>Administracion</td>
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+              </tr>
+            </tbody>
+          </table>
           <ul>
           {% for catedra in user.docente.catedra_set.all %}
             <li><a href="{% url 'academico:catedra_detail_view' catedra.pk %}">{{ catedra }}</a></li>
@@ -23,12 +41,19 @@
           </ul>
         </div><!-- /.card-body -->
         <div class="card-footer">
-            Footer
+          <ul class="pagination pagination-sm m-0 float-right">
+            <li class="page-item"><a class="page-link" href="#">«</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">»</a></li>
+          </ul>
         </div><!-- /.card-footer-->
-    </div><!-- /.card -->
-    {% else %}
-      <p>Sin perfil Docente</p>
+      </div><!-- /.card -->
     {% endif %}
+
+
+
 {% endblock %}
 
 

@@ -1,4 +1,4 @@
-"""Docstring"""
+"""Modelos del sistema academico"""
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -10,7 +10,7 @@ User = settings.AUTH_USER_MODEL
 
 
 class Alumno(models.Model):
-    """Docstring"""
+    """Alumno"""
     user = models.OneToOneField(
         User, on_delete=models.PROTECT, blank=True, null=True)
     cedula = models.BigIntegerField(unique=True)
@@ -53,11 +53,11 @@ class Asignatura(models.Model):
         """
         try:
 
-            homologasQs = Asignatura.objects.filter(
+            homologas_qs = Asignatura.objects.filter(
                 grupohomologas=self.grupohomologas)
             x_str = ' / '.join([str(i) for i in homologasQs])
         except:
-            homologasQs = None
+            homologas_qs = None
             x_str = ""
         return x_str
 
@@ -131,6 +131,13 @@ class Catedra(models.Model):
         'Fecha Segundo Final', null=True, blank=True)
     hora_2final = models.TimeField('Hora Segundo Final', null=True, blank=True)
     # duration = models.DurationField(null=True)
+
+    class Meta:
+        permissions = [
+            (
+                "view_own_catedra",
+                "Puede ver catedras propias"),
+        ]
 
     def nombre(self):
         """
@@ -384,8 +391,12 @@ class RegistroCatedra(models.Model):
             ),
         ]
         permissions = [
-            ("can_list_own", "Puede listar propios"),
-            ("can_add_own", "Puede añadir propios"),
+            (
+                "view_own_registrocatedra",
+                "Puede ver registros de catedra propios"),
+            (
+                "add_own_registrocatedra",
+                "Puede añadir registros de catedra propios"),
         ]
 
     def plan_activo(self):
