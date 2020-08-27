@@ -22,22 +22,28 @@
                 <th scope="col">Seccion</th>
                 <th scope="col">Carrera</th>
                 <th scope="col">Periodo</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
+              {% for catedra in user.docente.catedra_set.all %}
               <tr>
-                <th scope="row">8</th>
-                <td>Administracion</td>
+                <th scope="row">{{ catedra.id }}</th>
+                <td>{{ catedra.nombre }}</td>
                 <td>x</td>
                 <td>x</td>
                 <td>x</td>
+                <td>
+                  <a href="{% url 'academico:catedra_detail_view' catedra.pk %}" class="btn btn-primary" role="button"><i class="far fa-eye"></i></a>
+                  <a href="{% url 'academico:registrocatedra_create_view' catedra.pk %}" class="btn btn-success" role="button"><i class="fas fa-plus"></i></a>
+
+                </td>
               </tr>
+              {% endfor %}
             </tbody>
           </table>
           <ul>
-          {% for catedra in user.docente.catedra_set.all %}
-            <li><a href="{% url 'academico:catedra_detail_view' catedra.pk %}">{{ catedra }}</a></li>
-          {% endfor %}
+
           </ul>
         </div><!-- /.card-body -->
         <div class="card-footer">

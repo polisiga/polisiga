@@ -30,8 +30,8 @@ python manage.py runserver
 python manage.py dumpdata --indent 2 academico.alumno -o dumpdata/alumno.json
 python manage.py dumpdata --indent 2 academico.periodo -o dumpdata/periodo.json
 
+python manage.py dumpdata --indent 2 academico.docente -o dumpdata/docente.json
 python manage.py dumpdata --indent 2 academico.catedra -o dumpdata/catedra.json
-
 
 ## Para cargar datos iniciales 
 
@@ -56,7 +56,8 @@ cat dumpdata/periodo.json | python manage.py loaddata --format=json  -
 cat dumpdata/docente.json | python manage.py loaddata --format=json  -
 
 cat dumpdata/catedra.json | python manage.py loaddata --format=json  -
-
+cat dumpdata/plan.json | python manage.py loaddata --format=json  -
+cat dumpdata/contenido.json | python manage.py loaddata --format=json  -
 
 # para inicializar con docker
 

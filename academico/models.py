@@ -141,7 +141,8 @@ class Catedra(models.Model):
 
     def nombre(self):
         """
-        El nombre de la catedra es el nombre de la primera asignatura
+        El nombre de la catedra es el nombre de la primera asignatura,
+        o el nombre de la asignatura principal del grupohomologas
         """
         result = ''
         if self.asignaturas.all().count() == 1:
@@ -250,13 +251,15 @@ class Docente(models.Model):
     '''
     registrocatedra_set: Registros de Catedra de este docente
     '''
-    user = models.OneToOneField(User, on_delete=models.PROTECT, null=True)
+    user = models.OneToOneField(User, on_delete=models.PROTECT,
+                                null=True, blank=True)
     cedula = models.BigIntegerField(unique=True)
-    titulo = models.CharField(max_length=10)
-    titulo_grado = models.CharField(max_length=10)
+    titulo = models.CharField(max_length=10, null=True, blank=True)
+    titulo_grado = models.CharField(max_length=10, null=True, blank=True)
     posgrado = models.CharField(max_length=10, null=True, blank=True)
     apellido = models.CharField(max_length=30)
     nombre = models.CharField(max_length=30)
+    email = models.EmailField(blank=True, null=True)
     categoria_docente = models.IntegerField(null=True)
 
     def __str__(self):
