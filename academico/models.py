@@ -131,6 +131,7 @@ class Catedra(models.Model):
         'Fecha Segundo Final', null=True, blank=True)
     hora_2final = models.TimeField('Hora Segundo Final', null=True, blank=True)
     # duration = models.DurationField(null=True)
+    
 
     class Meta:
         permissions = [
