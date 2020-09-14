@@ -175,8 +175,10 @@ def registrocatedra_edit_view(request, pk):
             plan=registrocatedra.plan_activo())
     return render(request, 'academico/registrocatedra_edit_view.html', {'form': form})
 
+@login_required
+@permission_required('academico.add_own_registrocatedra', raise_exception=True)
 def registrocatedra_create_view(request, catedra_pk):
-    
+    """ Vista para cargar registro de Catedra. """
     catedra = Catedra.objects.get(pk=catedra_pk)
     plan = catedra.get_plan()
     if request.method == "POST":

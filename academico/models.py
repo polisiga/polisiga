@@ -1,55 +1,50 @@
+"""Modelos del sistema academico"""
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models.signals import m2m_changed
 from django.urls import reverse
-from django.contrib.auth import get_user_model
 
 
 User = settings.AUTH_USER_MODEL
 
-# def es_docente(self):
-#     print("Prueba")
-#     try:
-#         docente = self.docente
-#         return True
-#     except get_user_model().docente.RelatedObjectDoesNotExist:
-#         return False
-
-#     return False
-
-# get_user_model().add_to_class('es_docente', es_docente)
-
-
 
 class Alumno(models.Model):
+    """Alumno"""
     user = models.OneToOneField(
-        User, on_delete=models.PROTECT,blank=True, null=True)
+        User, on_delete=models.PROTECT, blank=True, null=True)
     cedula = models.BigIntegerField(unique=True)
     nombre = models.CharField(max_length=30)
     apellido = models.CharField(max_length=30)
-    correo = models.EmailField(unique=True,blank=True)
+    correo = models.EmailField(unique=True, blank=True)
 
     def __str__(self):
-        return self.nombre + " "  + self.apellido
+        return self.nombre + " " + self.apellido
 
     def get_absolute_url(self):
+        """Docstring"""
         return reverse('academico:alumno_detail', kwargs={'pk': self.pk})
+
 
 # TODO: Verificar si dos Asignaturas tienen el mismo codigo, (GrupoHomologas)
 class Asignatura(models.Model):
+    """Docstring"""
     codigo = models.CharField(max_length=10, null=True, blank=True)
     siglas = models.CharField(null=True, max_length=10)
     nombre = models.CharField(max_length=100, null=True)
     carrera = models.ForeignKey('Carrera', on_delete=models.PROTECT, null=True)
-    departamento = models.ForeignKey('Departamento', null=True, on_delete=models.PROTECT)
-    enfasis = models.ForeignKey('Enfasis', on_delete=models.PROTECT, null=True, blank=True)
+    departamento = models.ForeignKey(
+        'Departamento', null=True, on_delete=models.PROTECT)
+    enfasis = models.ForeignKey(
+        'Enfasis', on_delete=models.PROTECT, null=True, blank=True)
     nivel = models.IntegerField(blank=True, null=True)
     semestre = models.IntegerField(blank=True, null=True)
     prerequisito = models.ManyToManyField('self', blank=True)
-    grupohomologas = models.ForeignKey('GrupoHomologas', blank=True, on_delete=models.PROTECT, null=True)
+    grupohomologas = models.ForeignKey(
+        'GrupoHomologas', blank=True, on_delete=models.PROTECT, null=True)
 
     def get_dpto_siglas(self):
+        """Docstring"""
         return self.departamento.siglas
 
     def homologas(self):
@@ -58,10 +53,11 @@ class Asignatura(models.Model):
         """
         try:
 
-            o = Asignatura.objects.filter(grupohomologas=self.grupohomologas)
-            x_str = ' / '.join([str(i) for i in o])
+            homologas_qs = Asignatura.objects.filter(
+                grupohomologas=self.grupohomologas)
+            x_str = ' / '.join([str(i) for i in homologasQs])
         except:
-            o = None
+            homologas_qs = None
             x_str = ""
         return x_str
 
@@ -73,6 +69,7 @@ class Asignatura(models.Model):
 
 
 class Carrera(models.Model):
+    """Docstring"""
     nombre = models.CharField(max_length=50)
     siglas = models.CharField(max_length=5, blank=True)
     semestres = models.IntegerField(blank=True, null=True)
@@ -133,23 +130,36 @@ class Catedra(models.Model):
     fecha_2final = models.DateField(
         'Fecha Segundo Final', null=True, blank=True)
     hora_2final = models.TimeField('Hora Segundo Final', null=True, blank=True)
-    #duration = models.DurationField(null=True)
+    # duration = models.DurationField(null=True)
+    
+
+    class Meta:
+        permissions = [
+            (
+                "view_own_catedra",
+                "Puede ver catedras propias"),
+        ]
 
     def nombre(self):
         """
-        El nombre de la catedra es el nombre de la primera asignatura
+        El nombre de la catedra es el nombre de la primera asignatura,
+        o el nombre de la asignatura principal del grupohomologas
         """
         result = ''
         if self.asignaturas.all().count() == 1:
             result = str(self.pk) + ' - ' + \
-                str(self.asignaturas.first().carrera.siglas) + \
-                ':' +  str(self.asignaturas.all().first().nombre)
+                     str(self.asignaturas.first().carrera.siglas) + \
+                     ':' + str(self.asignaturas.all().first().nombre)
         elif self.asignaturas.all().count() > 1:
             for idx, asignatura in enumerate(self.asignaturas.all()):
                 if idx == 0:
-                    result = str(self.pk) + ' - ' + str(asignatura.carrera.siglas) + ':' +  str(asignatura.nombre) 
+                    result = str(self.pk) + ' - ' + \
+                             str(asignatura.carrera.siglas) + ':' + \
+                             str(asignatura.nombre)
                 else:
-                    result = result + '\n      - ' + str(asignatura.carrera.siglas) + ':'  +  str(asignatura.nombre)
+                    result = result + '\n      - ' + \
+                             str(asignatura.carrera.siglas) + \
+                             ':' + str(asignatura.nombre)
         return result + ' - ' + self.seccion + ' - ' + str(self.periodo)
 
     def homologas(self):
@@ -181,28 +191,29 @@ class Catedra(models.Model):
         El plan activo es el plan con el campo año(year) mas reciente
         """
         try:
-            o = self.asignaturas.all().first().plan_set.all().order_by('-year').first()
+            plan_activo = self.asignaturas.all() \
+                .first().plan_set.all().order_by('-year').first()
         except:
-            o = None
+            plan_activo = None
 
-        return o
+        return plan_activo
 
     def get_absolute_url(self):
         return reverse('academico:catedra-detail', kwargs={'pk': self.pk})
-
 
     def get_plan(self):
         '''
         Si la primera asignatura tiene grupohomologas entonces trae el
         plan de la asignatura_principal del GrupoHomologas
         '''
-        
         return self.asignaturas.first().plan_set.first()
 
     def __str__(self):
         return self.nombre()
 
+
 def catedra_asignaturas_changed(sender, *args, **kwargs):
+    """Docstring"""
     if kwargs['action'] == 'pre_add':
         if kwargs['instance'].asignaturas.count() > 1:
             gh = kwargs['instance'].asignaturas.first().grupohomologas.pk
@@ -210,9 +221,14 @@ def catedra_asignaturas_changed(sender, *args, **kwargs):
                 if gh != Asignatura.objects.get(pk=pk_new).grupohomologas:
                     raise ValidationError('Asignaturas no homologas.')
 
-m2m_changed.connect(catedra_asignaturas_changed, sender=Catedra.asignaturas.through)
+
+m2m_changed.connect(
+    catedra_asignaturas_changed,
+    sender=Catedra.asignaturas.through)
+
 
 class Contenido(models.Model):
+    """Docstring"""
     plan = models.ForeignKey('Plan', on_delete=models.PROTECT)
     titulo = models.CharField(max_length=100)
 
@@ -224,6 +240,7 @@ class Contenido(models.Model):
 
 
 class Departamento(models.Model):
+    """Docstring"""
     nombre = models.CharField(max_length=50)
     siglas = models.CharField(max_length=10)
 
@@ -235,22 +252,23 @@ class Docente(models.Model):
     '''
     registrocatedra_set: Registros de Catedra de este docente
     '''
-    user = models.OneToOneField(User, on_delete=models.PROTECT, null=True)
+    user = models.OneToOneField(User, on_delete=models.PROTECT,
+                                null=True, blank=True)
     cedula = models.BigIntegerField(unique=True)
-    titulo = models.CharField(max_length=10)
-    titulo_grado = models.CharField(max_length=10)
+    titulo = models.CharField(max_length=10, null=True, blank=True)
+    titulo_grado = models.CharField(max_length=10, null=True, blank=True)
     posgrado = models.CharField(max_length=10, null=True, blank=True)
     apellido = models.CharField(max_length=30)
     nombre = models.CharField(max_length=30)
+    email = models.EmailField(blank=True, null=True)
     categoria_docente = models.IntegerField(null=True)
-
-
 
     def __str__(self):
         return str(self.id) + ' - ' + self.apellido + ', ' + self.nombre
 
 
 class Enfasis(models.Model):
+    """Docstring"""
     nombre = models.CharField(max_length=50)
     siglas = models.CharField(max_length=5)
     carrera = models.ForeignKey(
@@ -262,11 +280,15 @@ class Enfasis(models.Model):
 
 
 class GrupoHomologas(models.Model):
-    asignatura_primaria = models.ForeignKey(Asignatura, null=True, on_delete=models.PROTECT, related_name='asignatura_primaria')
+    """Docstring"""
+    asignatura_primaria = models.ForeignKey(
+        Asignatura, null=True, on_delete=models.PROTECT,
+        related_name='asignatura_primaria')
     descripcion = models.CharField(max_length=50)
 
 
 class Horario(models.Model):
+    """Docstring"""
     catedra = models.ForeignKey('Catedra', on_delete=models.PROTECT)
     DIA_SET = (
         (1, 'Lunes'),
@@ -283,6 +305,7 @@ class Horario(models.Model):
 
 
 class Periodo(models.Model):
+    """Docstring"""
     PERIODO_SET = (
         (1, 'Primer'),
         (2, 'Segundo'),
@@ -307,13 +330,13 @@ class Periodo(models.Model):
 
 
 class Plan(models.Model):
+    """Docstring"""
     asignatura = models.ForeignKey(
         'Asignatura', on_delete=models.PROTECT, null=True)
     year = models.IntegerField('Año', default=0)
 
-
     def from_catedra(self, catedra_pk):
-        #asignatura = Catedra.objects.get
+        # asignatura = Catedra.objects.get
         plan_pk = Plan.objects.filter(asignatura=9)
         return plan_pk
 
@@ -364,18 +387,29 @@ class RegistroCatedra(models.Model):
         "Especificar otros medios auxiliares", default="", blank=True)
 
     class Meta:
+        """Docstring"""
         constraints = [
             models.UniqueConstraint(
                 fields=['fecha', 'catedra', 'docente'],
                 name='unique_registrocatedra'
             ),
         ]
+        permissions = [
+            (
+                "view_own_registrocatedra",
+                "Puede ver registros de catedra propios"),
+            (
+                "add_own_registrocatedra",
+                "Puede añadir registros de catedra propios"),
+        ]
 
     def plan_activo(self):
-        return self.catedra.asignaturas.first().plan_set.all().order_by('-year').first()
+        """Docstring"""
+        return self.catedra.asignaturas.first() \
+                   .plan_set.all().order_by('-year').first()
 
     def get_absolute_url(self):
-
+        """Docstring"""
         return reverse('academico:registro-detail', kwargs={'pk': self.pk})
 
     def __str__(self):

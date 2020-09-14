@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,13 +22,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'u5#8s*#0)_pye7^dfkqz=fav*x1fc*28$qb(djtou4tca0(478'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
 
+if os.getenv('ALLOWED_HOSTS'):
+    ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(',')
+else:
+    ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -46,7 +51,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+
+SITE_ID = 1
+
+# Provider specific settings
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -94,6 +110,27 @@ DATABASES = {
 }
 
 
+AUTHENTICATION_BACKENDS = [
+      # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+ACCOUNT_ADAPTER = 'academico.adapter.RestrictEmailAdapter'
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -136,7 +173,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/opt/polisiga/static'
 
 
-LOGIN_REDIRECT_URL = 'academico/'
+LOGIN_REDIRECT_URL = '/academico/'
 
 LOGOUT_REDIRECT_URL = '/'
 

@@ -2,30 +2,64 @@
 
 
 
-{% block page_name %}Tablero {% if user.docente %}es docente{% endif %}{% if user.alumno %}es docente{% endif %}{% endblock %}
+{% block page_name %}Tablero {% endblock %}
 
 {% block content %}
 
     <!-- Si tiene perfil docente se muestra lista de catedras -->
-    {% if user.docente %}
-    <div class="card">
+    
+    {% if perms.academico.view_own_catedra %}
+      <div class="card">
         <div class="card-header">
-            <h3 class="card-title">Asignaturas Activas</h3>
+            <h3 class="card-title">Mis Asignaturas Activas</h3>
         </div>
         <div class="card-body">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Asignatura</th>
+                <th scope="col">Seccion</th>
+                <th scope="col">Carrera</th>
+                <th scope="col">Periodo</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for catedra in user.docente.catedra_set.all %}
+              <tr>
+                <th scope="row">{{ catedra.id }}</th>
+                <td>{{ catedra.nombre }}</td>
+                <td>x</td>
+                <td>x</td>
+                <td>x</td>
+                <td>
+                  <a href="{% url 'academico:catedra_detail_view' catedra.pk %}" class="btn btn-primary" role="button"><i class="far fa-eye"></i></a>
+                  <a href="{% url 'academico:registrocatedra_create_view' catedra.pk %}" class="btn btn-success" role="button"><i class="fas fa-plus"></i></a>
+
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
           <ul>
-          {% for catedra in user.docente.catedra_set.all %}
-            <li><a href="{% url 'academico:catedra_detail_view' catedra.pk %}">{{ catedra }}</a></li>
-          {% endfor %}
+
           </ul>
         </div><!-- /.card-body -->
         <div class="card-footer">
-            Footer
+          <ul class="pagination pagination-sm m-0 float-right">
+            <li class="page-item"><a class="page-link" href="#">«</a></li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">»</a></li>
+          </ul>
         </div><!-- /.card-footer-->
-    </div><!-- /.card -->
-    {% else %}
-      <p>Sin perfil Docente</p>
+      </div><!-- /.card -->
     {% endif %}
+
+
+
 {% endblock %}
 
 
