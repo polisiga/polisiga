@@ -129,7 +129,9 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
-ACCOUNT_ADAPTER = 'academico.adapter.RestrictEmailAdapter'
+#SOCIALACCOUNT_ADAPTER = 'myapp.auth.adapters.SocialAccountAdapter'
+
+SOCIALACCOUNT_ADAPTER = 'academico.adapter.SocialAccountAdapter'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
