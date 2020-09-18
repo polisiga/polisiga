@@ -1,9 +1,11 @@
 from django.urls import reverse
+from django.utils.html import format_html
 import django_tables2 as tables
 from django_tables2.utils import A
 from django.utils.safestring import mark_safe
 
 from .models import Asignatura
+from .models import Docente
 
 class AsignaturaTable(tables.Table):
 
@@ -28,4 +30,26 @@ class AsignaturaTable(tables.Table):
             'nombre',
             'carrera',
             'departamento',
+        )
+
+class DocenteTable(tables.Table):
+
+    id = tables.Column(linkify=True)
+
+
+    editar = tables.Column('', accessor=A('id'))
+
+
+    def render_editar(self, value, record):
+        return format_html('<a href="{}" class="btn btn-primary" role="button"><i class="far fa-eye"></i></a>', reverse('academico:docente_detail', args=[value]))
+
+
+    class Meta:
+        model = Docente
+        template_name = 'django_tables2/bootstrap4.html'
+        fields = (
+            'id',
+            'cedula',
+            'apellido',
+            'nombre',
         )

@@ -40,7 +40,12 @@
                 <p>Tablero</p>
               </a>
             </li>
-
+            <li class="nav-item">
+              <a href="{% url 'academico:docente_list' %}" class="nav-link">
+                <i class="nav-icon fas fa-user"></i> 
+                <p>Docente</p>
+              </a>
+            </li>
             {% endblock nav_links %}
 
           {% endblock nav_links_outer %}

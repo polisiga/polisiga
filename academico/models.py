@@ -30,7 +30,7 @@ class Alumno(models.Model):
 class Asignatura(models.Model):
     """Docstring"""
     codigo = models.CharField(max_length=10, null=True, blank=True)
-    siglas = models.CharField(null=True, max_length=10)
+    siglas = models.CharField(null=True, blank=True, max_length=10)
     nombre = models.CharField(max_length=100, null=True)
     carrera = models.ForeignKey('Carrera', on_delete=models.PROTECT, null=True)
     departamento = models.ForeignKey(
@@ -262,6 +262,9 @@ class Docente(models.Model):
     nombre = models.CharField(max_length=30)
     email = models.EmailField(blank=True, null=True)
     categoria_docente = models.IntegerField(null=True)
+
+    def get_absolute_url(self):
+        return f"{self.id}/"
 
     def __str__(self):
         return str(self.id) + ' - ' + self.apellido + ', ' + self.nombre

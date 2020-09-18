@@ -19,14 +19,16 @@ from django_tables2 import (
 )
 
 from .filters import (
-    AsignaturaFilter
+    AsignaturaFilter,
+    DocenteFilter,
 )
 
 from .forms import (
     RegistroCatedraForm
 )
 from .tables import (
-    AsignaturaTable
+    AsignaturaTable,
+    DocenteTable,
 )
 
 from .models import (
@@ -120,8 +122,23 @@ def departamento_list(request):
 def docente_detail(request, pk):
     return render(request, 'academico/docente_detail.html')
 
+@login_required
+@permission_required('view_docente')
 def docente_list(request):
-    return render(request, 'academico/docente_list.html')
+
+    docentes = DocenteFilter(request.GET, queryset=Docente.objects.all())
+    paginator = Paginator(docentes.qs, 25)
+    page = request.GET.get('page')
+    docentes_page = paginator.get_page(page)
+
+    return render(request, 'academico/docente_list.html',
+                  {'docentes': docentes, 'docentes_page': docentes_page})
+
+class DocenteListView(SingleTableMixin, FilterView):
+    table_class = DocenteTable
+    model = Docente
+    template_name = 'academico/docente_list.html'
+    filterset_class = DocenteFilter
 
 def enfasis_detail(request, pk):
     return render(request, 'academico/enfasis_detail.html')
