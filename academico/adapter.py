@@ -20,17 +20,16 @@ allowed_signup_domains = [
 
 class SocialAccountAdapter(DefaultSocialAccountAdapter):
 
+
     def is_open_for_signup(self, request, sociallogin):
+        """
+        Si el usuario tiene los dominios pol.una.py o fpuna.edu.py
+        se registra dentro del sistema, luego este usuario se debe
+        enlazar con el objeto Docente y dar los permisos correspondiente.
+        """
+
         if email_domain(sociallogin.user.email) not in allowed_signup_domains:
             return False
         return super(SocialAccountAdapter, self).is_open_for_signup(request, sociallogin)
 
 
-
-# class RestrictEmailAdapter(DefaultSocialAccountAdapter):
-#     def clean_email(self,email):
-#         RestrictedList = ['guillermitus@gmail.com']
-#         print(RestrictedList)
-#         if email in RestrictedList:
-#             raise ValidationError('You are restricted from registering. Please contact admin.')
-#         return email
