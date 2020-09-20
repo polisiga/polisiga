@@ -41,7 +41,14 @@ class DocenteTable(tables.Table):
 
 
     def render_editar(self, value, record):
-        return format_html('<a href="{}" class="btn btn-primary" role="button"><i class="far fa-eye"></i></a>', reverse('academico:docente_detail', args=[value]))
+        return format_html(
+            '''
+            <a href="{}" class="btn btn-primary" role="button"><i class="far fa-eye"></i></a>
+            <a href="{}" class="btn btn-success" role="button"><i class="fas fa-pen"></i></a>
+            ''',
+            reverse('academico:docente_detail', args=[value]),
+            reverse('academico:docente_update', args=[value]),
+            )
 
 
     class Meta:
@@ -52,4 +59,5 @@ class DocenteTable(tables.Table):
             'cedula',
             'apellido',
             'nombre',
+            'email'
         )

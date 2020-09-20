@@ -264,7 +264,7 @@ class Docente(models.Model):
     categoria_docente = models.IntegerField(null=True)
 
     def get_absolute_url(self):
-        return f"{self.id}/"
+        return reverse('academico:docente_detail', args=[str(self.id)])
 
     def __str__(self):
         return str(self.id) + ' - ' + self.apellido + ', ' + self.nombre

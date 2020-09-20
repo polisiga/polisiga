@@ -15,6 +15,7 @@ urlpatterns = [
     path('catedra/<int:catedra_pk>/registrocatedra/create', views.registrocatedra_create_view, name='registrocatedra_create_view'),
     path('docente/', views.DocenteListView.as_view(), name='docente_list'),
     path('docente/<int:pk>/', views.docente_detail, name='docente_detail'),
+    path('docente/<int:pk>/update', views.DocenteUpdateView.as_view(), name='docente_update'),
     path('registrocatedra/<int:pk>/', views.registrocatedra_detail_view, name='registrocatedra_detail_view'),
     path('registrocatedra/<int:pk>/edit/', views.registrocatedra_edit_view, name='registrocatedra_edit_view')
 
