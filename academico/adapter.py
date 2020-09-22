@@ -1,6 +1,38 @@
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.forms import ValidationError
 
+from allauth.account.signals import user_logged_in
+from django.dispatch import receiver
+
+from django.core.exceptions import ObjectDoesNotExist
+
+from .models import Docente
+
+from django.contrib.auth.models import Group
+
+@receiver(user_logged_in)
+def login_callback(sender, **kwargs):
+    print("User logged in!")
+
+    try:
+        docente = Docente.objects.get(email=kwargs['user'].email)
+    except ObjectDoesNotExist:
+        pass
+    else:
+        
+        docente.user = kwargs['user']
+        try:
+            grupo_docente = Group.objects.get(name='docente')
+        except ObjectDoesNotExist:
+            pass
+        else:
+            grupo_docente.user_set.add(kwargs['user'])
+        docente.save()
+    finally:
+        pass
+
+
+
 
 
 def email_domain(email):
