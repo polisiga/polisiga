@@ -417,3 +417,20 @@ class RegistroCatedra(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+
+# class Documento(models.Model):
+
+#         TIPO_SET = (
+#         ('', 'SOL_PERMISO'),
+#         ('MJ', 'MJ'),
+
+
+#     )
+
+#     fecha = models.DateField()
+#     tipo = models.CharField(max_length=15, null=True, choices=SECCION_SET)
+#     referencia_acta = models.CharField(max_length=30)
+#     referencia_res = models.CharField(max_length=15)
+#     docentes_relacionados = models.ManyToManyField(Docente)
+#     URL = models.URLField(blank=True)
