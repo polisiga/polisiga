@@ -24,6 +24,7 @@ from django_tables2 import (
 from .filters import (
     AsignaturaFilter,
     DocenteFilter,
+    DocumentoFilter
 )
 
 from .forms import (
@@ -32,12 +33,14 @@ from .forms import (
 from .tables import (
     AsignaturaTable,
     DocenteTable,
+    DocumentoTable,
 )
 
 from .models import (
     Asignatura,
     Catedra,
     Docente,
+    Documento,
     Contenido,
     Alumno,
     Plan,
@@ -153,6 +156,13 @@ class DocenteListView(PermissionRequiredMixin, SingleTableMixin, FilterView):
     model = Docente
     template_name = 'academico/docente_list.html'
     filterset_class = DocenteFilter
+
+class DocumentoListView(PermissionRequiredMixin, SingleTableMixin, FilterView):
+    permission_required = 'academico.view_documento'
+    table_class = DocumentoTable
+    model = Documento
+    template_name = 'academico/documento_list.html'
+    filterset_class = DocumentoFilter
 
 def enfasis_detail(request, pk):
     return render(request, 'academico/enfasis_detail.html')

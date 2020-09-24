@@ -7,6 +7,9 @@
 {% block content %}
 
     <!-- Si tiene perfil docente se muestra lista de catedras -->
+    <pre>
+      {{ perms.academico.update_docente }}
+    </pre>
     
     {% if perms.academico.view_own_catedra %}
       <div class="card">

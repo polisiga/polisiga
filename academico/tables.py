@@ -6,6 +6,7 @@ from django.utils.safestring import mark_safe
 
 from .models import Asignatura
 from .models import Docente
+from .models import Documento
 
 class AsignaturaTable(tables.Table):
 
@@ -60,4 +61,34 @@ class DocenteTable(tables.Table):
             'apellido',
             'nombre',
             'email'
+        )
+
+
+class DocumentoTable(tables.Table):
+
+    id = tables.Column(linkify=True)
+
+
+    editar = tables.Column('', accessor=A('id'))
+
+
+    def render_editar(self, value, record):
+        return format_html(
+            '''
+            <a href="{}" class="btn btn-primary" role="button"><i class="far fa-eye"></i></a>
+            <a href="{}" class="btn btn-success" role="button"><i class="fas fa-pen"></i></a>
+            ''',
+            reverse('academico:documento_detail', args=[value]),
+            reverse('academico:documento_update', args=[value]),
+            )
+
+
+    class Meta:
+        model = Documento
+        template_name = 'django_tables2/bootstrap4.html'
+        fields = (
+            'id',
+            'fecha',
+            'tipo',
+            'descripcion',
         )

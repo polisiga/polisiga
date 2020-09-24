@@ -34,6 +34,19 @@
         </ul>
         </div>
     </div>
+
+    <div class="card">
+        <div class="card-header with-border">
+            <h3 class="card-title">Documentos</h3>
+        </div>
+        <div class="card-body">
+        <ul>
+            {% for documento in docente.documento_set.all %}
+                <li>{{ documento }}</li>
+            {% endfor %}
+        </ul>
+        </div>
+    </div>
     
 {% endblock %}
 
