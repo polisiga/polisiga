@@ -2,7 +2,9 @@ from django.contrib.auth.decorators import (
     login_required,
     permission_required,
 )
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.paginator import Paginator
+
 from django.shortcuts import (
     get_list_or_404,
     get_object_or_404,
@@ -10,6 +12,7 @@ from django.shortcuts import (
     render,
 )
 from django.utils import timezone
+from django.views.generic.edit import UpdateView
 from datetime import timedelta
 from datetime import date
 from django_filters.views import FilterView
@@ -19,20 +22,25 @@ from django_tables2 import (
 )
 
 from .filters import (
-    AsignaturaFilter
+    AsignaturaFilter,
+    DocenteFilter,
+    DocumentoFilter
 )
 
 from .forms import (
     RegistroCatedraForm
 )
 from .tables import (
-    AsignaturaTable
+    AsignaturaTable,
+    DocenteTable,
+    DocumentoTable,
 )
 
 from .models import (
     Asignatura,
     Catedra,
     Docente,
+    Documento,
     Contenido,
     Alumno,
     Plan,
@@ -118,10 +126,43 @@ def departamento_list(request):
     return render(request, 'academico/departamento_list.html')
 
 def docente_detail(request, pk):
-    return render(request, 'academico/docente_detail.html')
+    docente = get_object_or_404(Docente, pk=pk)
+    return render(request, 'academico/docente_detail.html',{'docente': docente})
 
+class DocenteUpdateView(UpdateView):
+    model = Docente
+    template_name = "academico/docente_update.html"
+    fields = [
+        'cedula',
+        'apellido',
+        'nombre',
+        'email'
+        ]
+
+@permission_required('academico.view_docente')
 def docente_list(request):
-    return render(request, 'academico/docente_list.html')
+
+    docentes = DocenteFilter(request.GET, queryset=Docente.objects.all())
+    paginator = Paginator(docentes.qs, 25)
+    page = request.GET.get('page')
+    docentes_page = paginator.get_page(page)
+
+    return render(request, 'academico/docente_list.html',
+                  {'docentes': docentes, 'docentes_page': docentes_page})
+
+class DocenteListView(PermissionRequiredMixin, SingleTableMixin, FilterView):
+    permission_required = 'academico.view_docente'
+    table_class = DocenteTable
+    model = Docente
+    template_name = 'academico/docente_list.html'
+    filterset_class = DocenteFilter
+
+class DocumentoListView(PermissionRequiredMixin, SingleTableMixin, FilterView):
+    permission_required = 'academico.view_documento'
+    table_class = DocumentoTable
+    model = Documento
+    template_name = 'academico/documento_list.html'
+    filterset_class = DocumentoFilter
 
 def enfasis_detail(request, pk):
     return render(request, 'academico/enfasis_detail.html')

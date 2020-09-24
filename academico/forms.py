@@ -9,6 +9,7 @@ from .models import (
     Asignatura,
     Catedra,
     Contenido,
+    Docente,
     RegistroCatedra,
 )
 
@@ -51,6 +52,9 @@ class CatedraForm(forms.ModelForm):
     def clean(self):
     
         return self.cleaned_data
+
+
+
 
 
 class RegistroCatedraForm(forms.ModelForm):

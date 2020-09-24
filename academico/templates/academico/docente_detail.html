@@ -2,22 +2,51 @@
 
 
 
-{% block page_name %}Detalle de Docente{% endblock %}
+{% block page_name %}Detalle de Docente {{ docente }}{% endblock %}
 
 {% block content %}
 
     <!-- Default card -->
     <div class="card">
         <div class="card-header with-border">
-            <h3 class="card-title">Title</h3>
+            <h3 class="card-title">Detalle</h3>
         </div>
         <div class="card-body">
-            Index!
+            <p><strong>Cedula: </strong> {{ docente.cedula }}</p>
+            <p><strong>Apellido: </strong> {{ docente.apellido }}</p>
+            <p><strong>Nombre: </strong> {{ docente.nombre }}</p>
+            <p><strong>Email: </strong> {{ docente.email }}</p>
         </div><!-- /.card-body -->
         <div class="card-footer">
             Footer
         </div><!-- /.card-footer-->
     </div><!-- /.card -->
+
+    <div class="card">
+        <div class="card-header with-border">
+            <h3 class="card-title">Asignaturas Activadas</h3>
+        </div>
+        <div class="card-body">
+        <ul>
+            {% for catedra in docente.catedra_set.all %}
+                <li>{{ catedra }}</li>
+            {% endfor %}
+        </ul>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header with-border">
+            <h3 class="card-title">Documentos</h3>
+        </div>
+        <div class="card-body">
+        <ul>
+            {% for documento in docente.documento_set.all %}
+                <li>{{ documento }}</li>
+            {% endfor %}
+        </ul>
+        </div>
+    </div>
     
 {% endblock %}
 

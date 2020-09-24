@@ -14,6 +14,7 @@ from .models import (
     Contenido,
     Departamento,
     Docente,
+    Documento,
     Enfasis,
     GrupoHomologas,
     Plan,
@@ -25,6 +26,7 @@ from .models import (
 from .forms import (
     CatedraForm
 )
+
 
 
 User = get_user_model()
@@ -120,6 +122,15 @@ class DocenteAdmin(ImportExportModelAdmin):
     autocomplete_fields = [
         'user',
     ]
+
+@admin.register(Documento)
+class DocumentoAdmin(ImportExportModelAdmin):
+        autocomplete_fields = [
+        'docentes_relacionados',
+    ]
+        list_display = (
+            'fecha', 'nro_acta', 'nro_res',
+            'descripcion')
 
 
 class AsignaturaInLine(admin.TabularInline):

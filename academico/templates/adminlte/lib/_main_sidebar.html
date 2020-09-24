@@ -32,15 +32,32 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           {% block nav_links_outer %}
           <li class="nav-header">{% block nav_heading %}MENU PRINCIPAL{% endblock %}</li>
-
             {% block nav_links %}
             <li class="nav-item">
-              <a href="{% url 'academico:index' %}" class="nav-link">
-                <i class="nav-icon fas fa-user"></i> 
+              <a href="{% url 'academico:index' %}" class="nav-link {% if request.resolver_match.view_name == 'academico:index' %}active{% endif %}">
+                <i class="nav-icon fas fa-tachometer-alt"></i> 
                 <p>Tablero</p>
               </a>
             </li>
 
+            {% if perms.academico.view_docente %}
+            <li class="nav-item">
+              <a href="{% url 'academico:docente_list' %}" class="nav-link {% if request.resolver_match.view_name == 'academico:docente_list' %}active{% endif %}">
+                <i class="nav-icon fas fa-user"></i> 
+                <p>Docentes</p>
+              </a>
+            </li>
+            {% endif %}
+
+            {% if perms.academico.view_documento %}
+            <li class="nav-item">
+              <a href="{% url 'academico:documento_list' %}" class="nav-link {% if request.resolver_match.view_name == 'academico:documento_list' %}active{% endif %}">
+                <i class="nav-icon far fa-file"></i> 
+                <p>Documentos</p>
+              </a>
+            </li>
+            {% endif %}
+            
             {% endblock nav_links %}
 
           {% endblock nav_links_outer %}

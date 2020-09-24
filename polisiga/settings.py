@@ -159,6 +159,10 @@ LANGUAGE_CODE = 'es-py'
 
 TIME_ZONE = 'America/Asuncion'
 
+from django.conf.locale.es import formats as es_formats
+
+es_formats.DATE_FORMAT = "d/m/Y"
+
 USE_I18N = True
 
 USE_L10N = True
