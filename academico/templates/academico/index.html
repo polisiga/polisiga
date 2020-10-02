@@ -6,11 +6,6 @@
 
 {% block content %}
 
-    <!-- Si tiene perfil docente se muestra lista de catedras -->
-    <pre>
-      {{ perms.academico.update_docente }}
-    </pre>
-    
     {% if perms.academico.view_own_catedra %}
       <div class="card">
         <div class="card-header">
@@ -32,10 +27,10 @@
               {% for catedra in user.docente.catedra_set.all %}
               <tr>
                 <th scope="row">{{ catedra.id }}</th>
-                <td>{{ catedra.nombre }}</td>
-                <td>x</td>
-                <td>x</td>
-                <td>x</td>
+                <td>{{ catedra.asignaturas.first.nombre }}</td>
+                <td>{{ catedra.seccion }}</td>
+                <td>{{ catedra.asignaturas.first.carrera.siglas }}</td>
+                <td>{{ catedra.periodo }}</td>
                 <td>
                   <a href="{% url 'academico:catedra_detail_view' catedra.pk %}" class="btn btn-primary" role="button"><i class="far fa-eye"></i></a>
                   <a href="{% url 'academico:registrocatedra_create_view' catedra.pk %}" class="btn btn-success" role="button"><i class="fas fa-plus"></i></a>
