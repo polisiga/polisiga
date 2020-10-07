@@ -21,11 +21,13 @@ env = environ.Env(
     ALLOWED_HOSTS=(list)
 )
 # reading .env file
-environ.Env.read_env()
-
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+
+environ.Env.read_env(os.path.normcase(BASE_DIR + '/.env'))
+
 
 
 # Quick-start development settings - unsuitable for production
