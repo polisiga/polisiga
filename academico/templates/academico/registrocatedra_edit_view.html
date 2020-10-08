@@ -25,6 +25,22 @@
       <h3 class="card-title">Detalles</h3>
     </div><!-- /.card-header -->
     <div class="card-body">
+
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+
       <div class="form-row">
         {{ form.fecha|as_crispy_field }}
         {{ form.hora_desde|as_crispy_field }}
@@ -83,8 +99,12 @@
     {{ form.med_otros|as_crispy_field }}
   </div><!-- /.card-body -->
 </div><!-- /.card -->
-
-  <button type="submit" class="save btn btn-default">Guardar</button>
+<div class="row">
+  <div class="col-12 mb-2">
+    <button type="submit" class="save btn btn-success float-right">Guardar</button>
+  </div>
+</div>
+  
 </form>
 
 
