@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import (
     permission_required,
 )
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib import messages
 from django.core.paginator import Paginator
 
 from django.shortcuts import (
@@ -209,6 +210,7 @@ def registrocatedra_edit_view(request, pk):
         if form.is_valid():
             form.save()
             #form.save_m2m()
+            messages.success(request, 'Registro de Catedra actualizado correctamente.')
             return redirect('academico:registrocatedra_detail_view', pk=registrocatedra.pk)
     else:
         form = RegistroCatedraForm(instance=registrocatedra)

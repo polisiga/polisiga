@@ -5,6 +5,8 @@ from django.db import models
 from django.db.models.signals import m2m_changed
 from django.urls import reverse
 
+import datetime
+
 
 User = settings.AUTH_USER_MODEL
 
@@ -388,6 +390,41 @@ class RegistroCatedra(models.Model):
     med_prog = models.BooleanField("Programas utilitarios", default=False)
     med_otros = models.TextField(
         "Especificar otros medios auxiliares", default="", blank=True)
+
+    def clean(self):
+        #Verificar la cantidad de tiempo entre hora_desde y hora_hasta
+        datetime_desde = datetime.datetime(
+            self.fecha.year,
+            self.fecha.month,
+            self.fecha.day,
+            self.hora_desde.hour,
+            self.hora_desde.minute,
+            self.hora_desde.second,
+            self.hora_desde.microsecond
+        )
+        datetime_hasta = datetime.datetime(
+            self.fecha.year,
+            self.fecha.month,
+            self.fecha.day,
+            self.hora_hasta.hour,
+            self.hora_hasta.minute,
+            self.hora_hasta.second,
+            self.hora_hasta.microsecond
+        )
+
+        time_delta = datetime_hasta - datetime_desde
+        time_delta_horas = time_delta.total_seconds()/3600
+
+
+        if time_delta_horas > settings.POLISIGA_MAX_HORAS_CLASE:
+            raise ValidationError('Su Registro de Catedra tiene una duracion de ' \
+                + str(time_delta_horas) \
+                + ' horas, pero solo puede durar ' \
+                + str(settings.POLISIGA_MAX_HORAS_CLASE) \
+                + ' horas.')
+
+        if time_delta_horas <= 0:
+            raise ValidationError('La duracion del Registro de Catedra debe ser mayor a 0.')
 
     class Meta:
         """Docstring"""
