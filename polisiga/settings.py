@@ -18,7 +18,8 @@ import environ
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False),
-    ALLOWED_HOSTS=(list)
+    ALLOWED_HOSTS=(list),
+    POLISIGA_MAX_HORAS_CLASE=(int, 4)
 )
 # reading .env file
 
@@ -32,6 +33,8 @@ environ.Env.read_env(os.path.normcase(BASE_DIR + '/.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
+
+POLISIGA_MAX_HORAS_CLASE = env('POLISIGA_MAX_HORAS_CLASE')
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
