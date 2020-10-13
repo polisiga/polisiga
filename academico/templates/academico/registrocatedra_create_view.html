@@ -29,7 +29,7 @@
     <div class="card-body">
       <div class="form-row">
       
-        {{ form.fecha }}
+        {{ form.fecha|as_crispy_field }}
         {{ form.hora_desde|as_crispy_field }}
         {{ form.hora_hasta|as_crispy_field }}
         {{ form.catedra|as_crispy_field }}
@@ -86,8 +86,12 @@
     {{ form.med_otros|as_crispy_field }}
   </div><!-- /.card-body -->
 </div><!-- /.card -->
+<div class="row">
+  <div class="col-12 mb-2">
+    <button type="submit" class="save btn btn-success float-right">Guardar</button>
+  </div>
+</div>
 
-  <button type="submit" class="save btn btn-default">Guardar</button>
 </form>
 
 
