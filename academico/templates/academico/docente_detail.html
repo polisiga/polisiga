@@ -28,10 +28,15 @@
         </div>
         <div class="card-body">
         <ul>
-            {% for catedra in docente.catedra_set.all %}
+            {% for catedra in docente_catedra_set %}
                 <li>{{ catedra }}</li>
             {% endfor %}
+            <br>
+            <a href="#">Ver mas</a>
         </ul>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="save btn btn-success float-right">Nuevo</button>
         </div>
     </div>
 

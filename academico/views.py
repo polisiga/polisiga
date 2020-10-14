@@ -128,7 +128,15 @@ def departamento_list(request):
 
 def docente_detail(request, pk):
     docente = get_object_or_404(Docente, pk=pk)
-    return render(request, 'academico/docente_detail.html',{'docente': docente})
+    docente_catedra_set = docente.catedra_set.all()[:5]
+    return render(
+        request,
+        'academico/docente_detail.html',
+        {
+            'docente': docente,
+            'docente_catedra_set': docente_catedra_set,
+        }
+    )
 
 class DocenteUpdateView(UpdateView):
     model = Docente
