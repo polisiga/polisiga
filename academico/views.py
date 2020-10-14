@@ -174,6 +174,22 @@ class DocenteListView(PermissionRequiredMixin, SingleTableMixin, FilterView):
     template_name = 'academico/docente_list.html'
     filterset_class = DocenteFilter
 
+class DocenteCatedraView(PermissionRequiredMixin, SingleTableMixin, FilterView):
+    permission_required = 'academico.view_catedra'
+    table_class = CatedraTable
+    model = Catedra
+    template_name = 'academico/catedra_list.html'
+    filterset_class = CatedraFilter
+
+    def has_permission(self, *args, **kwargs):
+        # si soy docente de la catedra se permite ver
+        # o si se tiene el permiso view_catedra
+
+
+        #se retorna True si se tiene permiso
+        return True
+
+
 class DocumentoListView(PermissionRequiredMixin, SingleTableMixin, FilterView):
     permission_required = 'academico.view_documento'
     table_class = DocumentoTable
