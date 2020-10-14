@@ -201,7 +201,7 @@ class Catedra(models.Model):
         return plan_activo
 
     def get_absolute_url(self):
-        return reverse('academico:catedra-detail', kwargs={'pk': self.pk})
+        return reverse('academico:catedra_detail_view', kwargs={'pk': self.pk})
 
     def get_plan(self):
         '''
@@ -217,6 +217,8 @@ class Catedra(models.Model):
 def catedra_asignaturas_changed(sender, *args, **kwargs):
     """Docstring"""
     if kwargs['action'] == 'pre_add':
+
+        #validar asignaturas homologas
         if kwargs['instance'].asignaturas.count() > 1:
             gh = kwargs['instance'].asignaturas.first().grupohomologas.pk
             for pk_new in kwargs['pk_set']:
