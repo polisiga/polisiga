@@ -1,0 +1,34 @@
+{% extends 'adminlte/base.html' %}
+{% load render_table from django_tables2 %}
+{% load bootstrap4 %}
+
+
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Catedras</h3>
+
+          <div class="card-tools">
+            {% if filter %}
+                <form action="" method="get" class="form form-inline">
+                    {% bootstrap_form filter.form layout='inline' %}
+                    {% bootstrap_button 'filtrar' %}
+                </form>
+            {% endif %}
+          </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body table-responsive p-0">
+
+          
+          {% render_table table %}
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+  </div>
+{% endblock %}

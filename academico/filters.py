@@ -3,6 +3,7 @@ from django.forms.widgets import TextInput
 
 from .models import (
     Asignatura,
+    Catedra,
     Docente,
     Documento
 )
@@ -19,6 +20,14 @@ class AsignaturaFilter(django_filters.FilterSet):
             'carrera',
             'departamento',
             'semestre'
+        ]
+
+class CatedraFilter(django_filters.FilterSet):
+
+    class Meta:
+        model = Catedra
+        fields = [
+            'periodo',
         ]
 
 class DocenteFilter(django_filters.FilterSet):

@@ -24,6 +24,7 @@ from django_tables2 import (
 
 from .filters import (
     AsignaturaFilter,
+    CatedraFilter,
     DocenteFilter,
     DocumentoFilter
 )
@@ -33,6 +34,7 @@ from .forms import (
 )
 from .tables import (
     AsignaturaTable,
+    CatedraTable,
     DocenteTable,
     DocumentoTable,
 )
@@ -87,7 +89,6 @@ def asignatura_list_view(request, *args, **kwargs):
 
     asignatura_list = AsignaturaFilter(request.GET, queryset=Asignatura.objects.all())
 
-
     paginator = Paginator(asignatura_list.qs, 25)
 
     page = request.GET.get('page')
@@ -113,6 +114,13 @@ def catedra_detail_view(request, pk):
 
 def catedra_list(request):
     return render(request, 'academico/catedra_list.html')
+
+class CatedraView(PermissionRequiredMixin, SingleTableMixin, FilterView):
+    permission_required = 'academico.view_catedra'
+    table_class = CatedraTable
+    model = Catedra
+    template_name = 'academico/catedra_list.html'
+    filterset_class = CatedraFilter
 
 def contenido_detail(request, pk):
     return render(request, 'academico/contenido_detail.html')

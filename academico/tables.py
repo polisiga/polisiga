@@ -7,6 +7,7 @@ from django.utils.safestring import mark_safe
 from .models import Asignatura
 from .models import Docente
 from .models import Documento
+from .models import Catedra
 
 class AsignaturaTable(tables.Table):
 
@@ -31,6 +32,19 @@ class AsignaturaTable(tables.Table):
             'nombre',
             'carrera',
             'departamento',
+        )
+
+class CatedraTable(tables.Table):
+
+    id = tables.Column(linkify=True)
+
+    class Meta:
+        model = Catedra
+        template_name = 'django_tables2/bootstrap4.html'
+        fields = (
+            'descripcion',
+            'docentes',
+            'asignaturas'
         )
 
 class DocenteTable(tables.Table):
