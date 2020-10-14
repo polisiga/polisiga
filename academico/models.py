@@ -274,6 +274,29 @@ class Docente(models.Model):
         return str(self.id) + ' - ' + self.apellido + ', ' + self.nombre
 
 
+class Documento(models.Model):
+
+    TIPO_DOCUMENTO_SET = (
+        ('ACTA_CD', 'Acta Consejo Directivo'),
+        ('ACTA_CSU', 'Acta Consejo Superior Universitario'),
+    )
+
+    tipo = models.CharField(max_length=15, choices=TIPO_DOCUMENTO_SET)
+    descripcion = models.CharField(max_length=200)
+    fecha = models.DateField(blank=True)
+    nro_acta = models.IntegerField(blank=True)
+    nro_res = models.CharField(blank=True, max_length=15)
+    otra_numeracion = models.CharField(blank=True, max_length=15)
+    docentes_relacionados = models.ManyToManyField(Docente)
+    url = models.URLField(blank=True)
+
+    def get_absolute_url(self):
+        return reverse('academico:documento_detail', kwargs={'pk': self.pk})
+
+    def __str__(self):
+        return '{} - {} - {}'.format(self.fecha, self.get_tipo_display(), self.descripcion)
+    
+
 class Enfasis(models.Model):
     """Docstring"""
     nombre = models.CharField(max_length=50)
@@ -458,22 +481,3 @@ class RegistroCatedra(models.Model):
         return str(self.id)
 
 
-class Documento(models.Model):
-
-    TIPO_DOCUMENTO_SET = (
-        ('ACTA_CD', 'Acta Consejo Directivo'),
-        ('ACTA_CSU', 'Acta Consejo Superior Universitario'),
-    )
-
-    tipo = models.CharField(max_length=15, choices=TIPO_DOCUMENTO_SET)
-    descripcion = models.CharField(max_length=200)
-    fecha = models.DateField(blank=True)
-    nro_acta = models.IntegerField(blank=True)
-    nro_res = models.CharField(blank=True, max_length=15)
-    otra_numeracion = models.CharField(blank=True, max_length=15)
-    docentes_relacionados = models.ManyToManyField(Docente)
-    URL = models.URLField(blank=True)
-
-    def __str__(self):
-        return '{} - {} - {}'.format(self.fecha, self.get_tipo_display(), self.descripcion)
-    
