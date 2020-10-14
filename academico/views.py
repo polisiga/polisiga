@@ -13,6 +13,7 @@ from django.shortcuts import (
     render,
 )
 from django.utils import timezone
+from django.views.generic import DetailView
 from django.views.generic.edit import UpdateView
 from datetime import timedelta
 from datetime import date
@@ -54,7 +55,7 @@ from .models import (
 def index(request):
 
 
-    return render(request, 'academico/index.html')
+    return render(request, 'academico/index.html',{'titulo': "Tablero"})
 
 def index_redirect(request):
     return redirect('academico:index')
@@ -122,6 +123,11 @@ class CatedraView(PermissionRequiredMixin, SingleTableMixin, FilterView):
     template_name = 'academico/catedra_list.html'
     filterset_class = CatedraFilter
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = "Catedras"
+        return context
+
 def contenido_detail(request, pk):
     return render(request, 'academico/contenido_detail.html')
 
@@ -132,7 +138,7 @@ def departamento_detail(request, pk):
     return render(request, 'academico/departamento_detail.html')
 
 def departamento_list(request):
-    return render(request, 'academico/departamento_list.html')
+    return render(request, 'academico/departamento_list.html',{'titulo': "Docentes"})
 
 def docente_detail(request, pk):
     docente = get_object_or_404(Docente, pk=pk)
@@ -141,6 +147,7 @@ def docente_detail(request, pk):
         request,
         'academico/docente_detail.html',
         {
+            'titulo': "Detalle de docente " + str(docente),
             'docente': docente,
             'docente_catedra_set': docente_catedra_set,
         }
@@ -178,8 +185,23 @@ class DocenteCatedraView(PermissionRequiredMixin, SingleTableMixin, FilterView):
     permission_required = 'academico.view_catedra'
     table_class = CatedraTable
     model = Catedra
-    template_name = 'academico/catedra_list.html'
+    template_name = 'academico/docente_catedra_list.html'
     filterset_class = CatedraFilter
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context["titulo"] = "Catedras de " + str(self.docente)
+        context["docente"] = self.docente
+
+        return context
+    
+
+    def get_queryset(self):
+        self.docente = Docente.objects.get(pk=self.kwargs['pk'])
+        qs = Catedra.objects.filter(docentes=self.docente)
+        return qs
+    
 
     def has_permission(self, *args, **kwargs):
         # si soy docente de la catedra se permite ver
@@ -196,6 +218,31 @@ class DocumentoListView(PermissionRequiredMixin, SingleTableMixin, FilterView):
     model = Documento
     template_name = 'academico/documento_list.html'
     filterset_class = DocumentoFilter
+
+def documento_detail(request, pk):
+    documento = get_object_or_404(Documento, pk=pk)
+    return render(
+        request, 'academico/documento_detail.html',
+        {
+            'titulo': "Detalle de documento " + str(documento),
+
+        }
+    )
+
+class DocumentoDetailView(DetailView):
+    model = Documento
+    #template_name = "documento_detail.html"
+
+class DocumentoUpdateView(UpdateView):
+    model = Documento
+    fields = [
+        'tipo',
+        'descripcion',
+        'fecha',
+        'nro_acta'
+    ]
+    #template_name = "documento_update.html"
+
 
 def enfasis_detail(request, pk):
     return render(request, 'academico/enfasis_detail.html')

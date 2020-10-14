@@ -1,0 +1,47 @@
+{% extends 'adminlte/base.html' %}
+
+
+{% block content_header %}
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0 text-dark">Detalle de Documento #{{ object.id }}</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'academico:index'%}">Inicio</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'academico:documento_list' %}">Documentos</a></li>
+          <li class="breadcrumb-item active">{{ object.id }}</li>   
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
+{% block content %}
+
+    <!-- Default card -->
+    <div class="card">
+        <div class="card-header with-border">
+
+        </div>
+        <div class="card-body">
+            <p><strong>Fecha: </strong>{{ object.fecha }}</p>
+            <p><strong>Tipo: </strong>{{ object.tipo }}</p>
+            <p><strong>Numeracion: </strong> </p>
+            <p><strong>Descripcion: </strong>{{ object.descripcion }}</p>
+            <p><strong>URL: </strong>{{ object.url }}</p>
+        </div><!-- /.card-body -->
+        <div class="card-footer">
+            <a href="{% url 'academico:documento_update' object.pk %}" class="btn btn-primary float-right">Editar</a>
+        </div><!-- /.card-footer-->
+    </div><!-- /.card -->
+
+
+    
+{% endblock %}
+
+
