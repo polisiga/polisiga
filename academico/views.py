@@ -14,6 +14,7 @@ from django.shortcuts import (
 )
 from django.utils import timezone
 from django.views.generic import DetailView
+from django.views.generic.edit import CreateView
 from django.views.generic.edit import UpdateView
 from datetime import timedelta
 from datetime import date
@@ -233,15 +234,34 @@ class DocumentoDetailView(DetailView):
     model = Documento
     #template_name = "documento_detail.html"
 
+class DocumentoCreateView(CreateView):
+    model = Documento
+    fields = [
+        'tipo',
+        'descripcion',
+        'fecha',
+        'nro_acta',
+        'nro_res',
+        'otra_numeracion',
+        'docentes_relacionados',
+        'url'
+    ]
+    template_name_suffix = '_create'
+
+
 class DocumentoUpdateView(UpdateView):
     model = Documento
     fields = [
         'tipo',
         'descripcion',
         'fecha',
-        'nro_acta'
+        'nro_acta',
+        'nro_res',
+        'otra_numeracion',
+        'docentes_relacionados',
+        'url'
     ]
-    #template_name = "documento_update.html"
+    template_name_suffix = '_update'
 
 
 def enfasis_detail(request, pk):

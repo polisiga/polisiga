@@ -19,6 +19,7 @@ urlpatterns = [
     path('docente/<int:pk>/update/', views.DocenteUpdateView.as_view(), name='docente_update'),
     path('docente/<int:pk>/catedra/',views.DocenteCatedraView.as_view(), name='docente_catedra_list'),
     path('documento/',views.DocumentoListView.as_view(), name='documento_list'),
+    path('documento/create/', views.DocumentoCreateView.as_view(), name='documento_create'),
     path('documento/<int:pk>/', views.DocumentoDetailView.as_view(), name='documento_detail'),
     path('documento/<int:pk>/update/', views.DocumentoUpdateView.as_view(), name='documento_update'),
     path('registrocatedra/<int:pk>/', views.registrocatedra_detail_view, name='registrocatedra_detail_view'),
