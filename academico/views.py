@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import (
 )
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator
 
 from django.shortcuts import (
@@ -220,21 +221,12 @@ class DocumentoListView(PermissionRequiredMixin, SingleTableMixin, FilterView):
     template_name = 'academico/documento_list.html'
     filterset_class = DocumentoFilter
 
-def documento_detail(request, pk):
-    documento = get_object_or_404(Documento, pk=pk)
-    return render(
-        request, 'academico/documento_detail.html',
-        {
-            'titulo': "Detalle de documento " + str(documento),
-
-        }
-    )
 
 class DocumentoDetailView(DetailView):
     model = Documento
-    #template_name = "documento_detail.html"
 
-class DocumentoCreateView(CreateView):
+
+class DocumentoCreateView(SuccessMessageMixin, CreateView):
     model = Documento
     fields = [
         'tipo',
@@ -247,9 +239,10 @@ class DocumentoCreateView(CreateView):
         'url'
     ]
     template_name_suffix = '_create'
+    success_message = "Documento creado exitosamente."
 
 
-class DocumentoUpdateView(UpdateView):
+class DocumentoUpdateView(SuccessMessageMixin, UpdateView):
     model = Documento
     fields = [
         'tipo',
@@ -262,6 +255,7 @@ class DocumentoUpdateView(UpdateView):
         'url'
     ]
     template_name_suffix = '_update'
+    success_message = "Documento actualizado exitosamente."
 
 
 def enfasis_detail(request, pk):
