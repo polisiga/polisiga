@@ -76,6 +76,9 @@ class Carrera(models.Model):
     siglas = models.CharField(max_length=5, blank=True)
     semestres = models.IntegerField(blank=True, null=True)
 
+    def get_absolute_url(self):
+        return reverse('academico:carrera_detail', kwargs={'pk': self.pk})
+
     def __str__(self):
 
         return self.nombre

@@ -8,6 +8,7 @@ from .models import Asignatura
 from .models import Docente
 from .models import Documento
 from .models import Catedra
+from .models import Carrera
 
 class AsignaturaTable(tables.Table):
 
@@ -32,6 +33,19 @@ class AsignaturaTable(tables.Table):
             'nombre',
             'carrera',
             'departamento',
+        )
+
+class CarreraTable(tables.Table):
+
+    id = tables.Column(linkify=True)
+
+    class Meta:
+        model = Carrera
+        template_name = 'django_tables2/bootstrap4.html'
+        fields = (
+            'id',
+            'siglas',
+            'nombre'
         )
 
 class CatedraTable(tables.Table):

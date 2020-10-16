@@ -38,12 +38,14 @@ from .forms import (
 from .tables import (
     AsignaturaTable,
     CatedraTable,
+    CarreraTable,
     DocenteTable,
     DocumentoTable,
 )
 
 from .models import (
     Asignatura,
+    Carrera,
     Catedra,
     Docente,
     Documento,
@@ -108,6 +110,44 @@ def carrera_detail(request, pk):
 
 def carrera_list(request):
     return render(request, 'academico/carrera_list.html')   
+
+class CarreraView(PermissionRequiredMixin, SingleTableView):
+    permission_required = 'academico.view_carrera'
+    table_class = CarreraTable
+    model = Carrera
+    template_name = 'academico/carrera_list'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = "Carreras"
+        return context
+
+class CarreraDetailView(DetailView):
+    model = Carrera
+
+
+class CarreraAsignaturaView(PermissionRequiredMixin, SingleTableMixin, FilterView):
+    permission_required = 'academico.view_catedra'
+    table_class = AsignaturaTable
+    model = Asignatura
+    template_name = 'academico/carrera_asignatura_list.html'
+    filterset_class = AsignaturaFilter
+
+    def get_queryset(self):
+        self.carrera = Carrera.objects.get(pk=self.kwargs['pk'])
+        qs = Catedra.objects.all()
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context["titulo"] = "Asignaturas de " + str(self.carrera)
+        context["carrera"] = self.carrera
+
+        return context
+
+
+
 
 # TODO: Validar que dias podria cargar un registrocatedra
 def catedra_detail_view(request, pk):
@@ -190,6 +230,11 @@ class DocenteCatedraView(PermissionRequiredMixin, SingleTableMixin, FilterView):
     template_name = 'academico/docente_catedra_list.html'
     filterset_class = CatedraFilter
 
+    def get_queryset(self):
+        self.docente = Docente.objects.get(pk=self.kwargs['pk'])
+        qs = Catedra.objects.filter(docentes=self.docente)
+        return qs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
@@ -199,10 +244,7 @@ class DocenteCatedraView(PermissionRequiredMixin, SingleTableMixin, FilterView):
         return context
     
 
-    def get_queryset(self):
-        self.docente = Docente.objects.get(pk=self.kwargs['pk'])
-        qs = Catedra.objects.filter(docentes=self.docente)
-        return qs
+
     
 
     def has_permission(self, *args, **kwargs):

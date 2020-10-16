@@ -67,6 +67,15 @@
               </a>
             </li>
             {% endif %}
+
+            {% if perms.academico.view_carrera %}
+            <li class="nav-item">
+              <a href="{% url 'academico:carrera_list' %}" class="nav-link {% if request.resolver_match.view_name == 'academico:carrera_list' %}active{% endif %}">
+                <i class="nav-icon fas fa-university"></i> 
+                <p>Carreras</p>
+              </a>
+            </li>
+            {% endif %}
             
             {% endblock nav_links %}
 
