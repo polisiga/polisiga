@@ -49,3 +49,16 @@
     </div>
   </div>
 {% endblock %}
+
+
+
+{% block extra_js %}
+  <script>
+    $(document).ready(function() {
+      $('#id_asignaturas').select2({theme: 'bootstrap4'});
+    });
+  </script>
+
+{{ filter.form.media }}
+
+{% endblock %}

@@ -27,6 +27,7 @@ class CatedraFilter(django_filters.FilterSet):
     class Meta:
         model = Catedra
         fields = [
+            'asignaturas',
             'periodo',
         ]
 
