@@ -127,7 +127,7 @@ class CarreraDetailView(DetailView):
 
 
 class CarreraAsignaturaView(PermissionRequiredMixin, SingleTableMixin, FilterView):
-    permission_required = 'academico.view_catedra'
+    permission_required = 'academico.view_asigntura'
     table_class = AsignaturaTable
     model = Asignatura
     template_name = 'academico/carrera_asignatura_list.html'
@@ -135,7 +135,31 @@ class CarreraAsignaturaView(PermissionRequiredMixin, SingleTableMixin, FilterVie
 
     def get_queryset(self):
         self.carrera = Carrera.objects.get(pk=self.kwargs['pk'])
-        qs = Catedra.objects.all()
+        qs = Asignatura.objects.filter(carrera=self.carrera)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context["titulo"] = "Asignaturas de " + str(self.carrera)
+        context["carrera"] = self.carrera
+
+        return context
+
+
+class CarreraCatedraView(PermissionRequiredMixin, SingleTableMixin, FilterView):
+    permission_required = 'academico.view_catedra'
+    table_class = CatedraTable
+    model = Catedra
+    template_name = 'academico/carrera_catedra_list.html'
+    filterset_class = CatedraFilter
+
+    def get_queryset(self):
+        self.carrera = Carrera.objects.get(pk=self.kwargs['pk'])
+        #qs = Catedra.objects.filter(carrera=self.carrera)
+        qs = Catedra.objects.filter(asignaturas__carrera=self.carrera)
+
         return qs
 
     def get_context_data(self, **kwargs):

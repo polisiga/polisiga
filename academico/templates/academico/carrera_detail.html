@@ -18,8 +18,9 @@
             
             <p>
             
-            <a href="{% url 'academico:carrera_asignatura_list' object.pk %}">Ver Asignaturas</a>
-            
+            <a href="{% url 'academico:carrera_asignatura_list' object.pk %}">Ver Asignaturas Activadas</a>
+            <br>
+            <a href="{% url 'academico:carrera_catedra_list' object.pk %}">Ver Catedras</a>
             </p>
 
         </div><!-- /.card-body -->

@@ -64,7 +64,8 @@ class Asignatura(models.Model):
         return x_str
 
     def get_absolute_url(self):
-        return f"{self.id}/"
+        #return f"{self.id}/"
+        return reverse('academico:asignatura_detail_view', kwargs={'pk': self.pk})
 
     def __str__(self):
         return str(self.pk) + " - " + self.carrera.siglas + " - " + self.nombre

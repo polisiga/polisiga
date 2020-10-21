@@ -14,6 +14,7 @@ urlpatterns = [
     path("carrera/", views.CarreraView.as_view(), name="carrera_list"),
     path('carrera/<int:pk>/', views.CarreraDetailView.as_view(), name='carrera_detail'),
     path('carrera/<int:pk>/asignatura/', views.CarreraAsignaturaView.as_view(), name='carrera_asignatura_list'),
+    path('carrera/<int:pk>/catedra/', views.CarreraCatedraView.as_view(), name='carrera_catedra_list'),
     path('catedra/',views.CatedraView.as_view(), name='catedra_list'),
     path('catedra/<int:pk>/', views.catedra_detail_view, name='catedra_detail_view'),
     path('catedra/<int:catedra_pk>/registrocatedra/create/', views.registrocatedra_create_view, name='registrocatedra_create_view'),
