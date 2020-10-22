@@ -57,6 +57,7 @@ class CatedraTable(tables.Table):
         model = Catedra
         template_name = 'django_tables2/bootstrap4.html'
         fields = (
+            'id',
             'descripcion',
             'docentes',
             'asignaturas'

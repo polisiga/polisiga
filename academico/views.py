@@ -13,6 +13,7 @@ from django.shortcuts import (
     redirect,
     render,
 )
+from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView
 from django.views.generic.edit import CreateView
@@ -139,7 +140,11 @@ class CarreraListView(PermissionRequiredMixin, SingleTableView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["titulo"] = "Carreras"
+        context['titulo'] = "Carreras"
+        context['breadcrumbs'] = [
+            {'value': "Inicio", 'url': reverse('academico:index')},
+            {'value': "Carreras", 'active': True}
+        ]
         return context
 
 class CarreraDetailView(DetailView):
@@ -148,6 +153,11 @@ class CarreraDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["titulo"] = "Detalle de " + str(self.object)
+        context['breadcrumbs'] = [
+            {'value': "Inicio", 'url': reverse('academico:index')},
+            {'value': "Carreras", 'url': reverse('academico:carrera_list')},
+            {'value': str(self.object.siglas), 'active': True}
+        ]
         return context
 
 
@@ -168,17 +178,22 @@ class CarreraAsignaturaView(PermissionRequiredMixin, SingleTableMixin, FilterVie
         context = super().get_context_data(**kwargs)
         
         context["titulo"] = "Asignaturas de " + str(self.carrera)
-        context["carrera"] = self.carrera
+        context['breadcrumbs'] = [
+            {'value': "Inicio", 'url': reverse('academico:index')},
+            {'value': "Carreras", 'url': reverse('academico:carrera_list')},
+            {'value': str(self.carrera.siglas), 'url': reverse('academico:carrera_detail', args=[self.carrera.pk])},
+            {'value': "Asignaturas", 'active': True}
+        ]
 
         return context
 
 
-class CarreraCatedraView(PermissionRequiredMixin, SingleTableMixin, FilterView):
+class CarreraCatedraView(PermissionRequiredMixin, SingleTableView):
     permission_required = 'academico.view_catedra'
     table_class = CatedraTable
     model = Catedra
     template_name = 'academico/carrera_catedra_list.html'
-    filterset_class = CatedraFilter
+    #filterset_class = CatedraFilter
 
     def get_queryset(self):
         self.carrera = Carrera.objects.get(pk=self.kwargs['pk'])
@@ -191,7 +206,12 @@ class CarreraCatedraView(PermissionRequiredMixin, SingleTableMixin, FilterView):
         context = super().get_context_data(**kwargs)
         
         context["titulo"] = "Asignaturas de " + str(self.carrera)
-        context["carrera"] = self.carrera
+        context['breadcrumbs'] = [
+            {'value': "Inicio", 'url': reverse('academico:index')},
+            {'value': "Carreras", 'url': reverse('academico:carrera_list')},
+            {'value': str(self.carrera.siglas), 'url': reverse('academico:carrera_detail', args=[self.carrera.pk])},
+            {'value': "Catedras", 'active': True}
+        ]
 
         return context
 
