@@ -41,6 +41,7 @@ from .tables import (
     CarreraTable,
     DocenteTable,
     DocumentoTable,
+    PlanTable,
 )
 
 from .models import (
@@ -84,6 +85,25 @@ class AsignaturaTableView(SingleTableMixin, FilterView):
 
     filterset_class = AsignaturaFilter
 
+class AsignaturaPlanView(SingleTableView):
+    model = Plan
+    table_class = PlanTable
+    template_name = 'academico/asignatura_plan_list.html'
+    
+
+    def dispatch(self, request, *args, **kwargs):
+
+        self.asignatura = Asignatura.objects.get(pk=self.kwargs['pk'])
+        return super(AsignaturaPlanView, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context["titulo"] = "Planes de " + str(self.asignatura)
+        context["asignatura"] = self.asignatura
+
+        return context
+
 def asignatura_detail_view(request, pk):
     asignatura = get_object_or_404(Asignatura, pk=pk)
 
@@ -111,7 +131,7 @@ def carrera_detail(request, pk):
 def carrera_list(request):
     return render(request, 'academico/carrera_list.html')   
 
-class CarreraView(PermissionRequiredMixin, SingleTableView):
+class CarreraListView(PermissionRequiredMixin, SingleTableView):
     permission_required = 'academico.view_carrera'
     table_class = CarreraTable
     model = Carrera
@@ -124,6 +144,11 @@ class CarreraView(PermissionRequiredMixin, SingleTableView):
 
 class CarreraDetailView(DetailView):
     model = Carrera
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = "Detalle de " + str(self.object)
+        return context
 
 
 class CarreraAsignaturaView(PermissionRequiredMixin, SingleTableMixin, FilterView):

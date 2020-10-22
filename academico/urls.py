@@ -2,19 +2,25 @@ from django.urls import path
 
 from . import views
 
+from .views import CarreraListView
+from .views import CarreraDetailView
+from .views import CarreraAsignaturaView
+from .views import CarreraCatedraView
+
+
 app_name = 'academico'
 
 urlpatterns = [
     path('',views.index, name='index'),
     path('alumno/', views.alumno_list, name='alumno_list'),
     path('alumno/<int:pk>/', views.alumno_detail, name='alumno_detail'),
-    path('asignatura/', views.AsignaturaTableView.as_view(), name='asignatura_table_view'),
-    path('asignatura_list/', views.asignatura_list_view, name='asignatura_list_view'),
+    path('asignatura/', views.AsignaturaTableView.as_view(), name='asignatura_list'),
     path('asignatura/<int:pk>/', views.asignatura_detail_view, name='asignatura_detail_view'),
-    path("carrera/", views.CarreraView.as_view(), name="carrera_list"),
-    path('carrera/<int:pk>/', views.CarreraDetailView.as_view(), name='carrera_detail'),
-    path('carrera/<int:pk>/asignatura/', views.CarreraAsignaturaView.as_view(), name='carrera_asignatura_list'),
-    path('carrera/<int:pk>/catedra/', views.CarreraCatedraView.as_view(), name='carrera_catedra_list'),
+    path('asignatura/<int:pk>/plan/', views.AsignaturaPlanView.as_view(), name='asignatura_plan_list'),
+    path('carrera/', CarreraListView.as_view(), name="carrera_list"),
+    path('carrera/<int:pk>/', CarreraDetailView.as_view(), name='carrera_detail'),
+    path('carrera/<int:pk>/asignatura/', CarreraAsignaturaView.as_view(), name='carrera_asignatura_list'),
+    path('carrera/<int:pk>/catedra/', CarreraCatedraView.as_view(), name='carrera_catedra_list'),
     path('catedra/',views.CatedraView.as_view(), name='catedra_list'),
     path('catedra/<int:pk>/', views.catedra_detail_view, name='catedra_detail_view'),
     path('catedra/<int:catedra_pk>/registrocatedra/create/', views.registrocatedra_create_view, name='registrocatedra_create_view'),

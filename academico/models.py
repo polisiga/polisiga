@@ -49,6 +49,9 @@ class Asignatura(models.Model):
         """Docstring"""
         return self.departamento.siglas
 
+    def get_plan_activo(self):
+        pass
+
     def homologas(self):
         """
         Nos da las asignaturas homologas en esta asignatura

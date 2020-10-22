@@ -57,3 +57,4 @@ class DocumentoFilter(django_filters.FilterSet):
         fields = [
             'tipo'
         ]
+
