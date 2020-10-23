@@ -210,7 +210,12 @@ class CarreraCatedraView(PermissionRequiredMixin, SingleTableView):
 def catedra_detail_view(request, pk):
 
     catedra = get_object_or_404(Catedra, pk=pk)
-    return render(request, 'academico/catedra_detail_view.html', {'catedra': catedra})
+    return render(request, 'academico/catedra_detail.html',
+                    {
+                        'catedra': catedra,
+                        'docentes': catedra.docentes
+                    
+                    })
 
 def catedra_list(request):
     return render(request, 'academico/catedra_list.html')
