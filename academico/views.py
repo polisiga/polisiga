@@ -49,10 +49,10 @@ from .models import (
     Asignatura,
     Carrera,
     Catedra,
+    Contenido,
     Docente,
     Documento,
-    Contenido,
-    Alumno,
+    Estudiante,
     Plan,
     RegistroCatedra,
 )
@@ -65,18 +65,6 @@ def index(request):
 
 def index_redirect(request):
     return redirect('academico:index')
-
-
-def alumno_detail(request, pk):
-    alumno = get_object_or_404(Alumno, pk=pk)
-
-    return render(request, 'academico/alumno_detail.html', {'alumno': alumno})
-
-@login_required
-@permission_required('view_alumno')
-def alumno_list(request):
-    alumnos = get_list_or_404(Alumno)
-    return render(request, 'academico/alumno_list.html', {'alumnos': alumnos})
 
 
 class AsignaturaTableView(SingleTableMixin, FilterView):
@@ -374,6 +362,18 @@ def enfasis_detail(request, pk):
 
 def enfasis_list(request):
     return render(request, 'academico/enfasis_list.html')
+
+
+def estudiante_detail(request, pk):
+    estudiante = get_object_or_404(Estudiante, pk=pk)
+
+    return render(request, 'academico/estudiante_detail.html', {'estudiante': estudiante})
+
+@login_required
+@permission_required('view_estudiante')
+def estudiante_list(request):
+    estudiantes = get_list_or_404(Estudianete)
+    return render(request, 'academico/estudiante_list.html', {'estudiante': estudiante})
 
 def grupo_homologas_detail(request, pk):
     return render(request, 'academico/grupo_homologas_detail.html')

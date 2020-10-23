@@ -7,7 +7,6 @@ from import_export.admin import ImportExportModelAdmin
 
 
 from .models import (
-    Alumno,
     Asignatura,
     Carrera,
     Catedra,
@@ -16,6 +15,7 @@ from .models import (
     Docente,
     Documento,
     Enfasis,
+    Estudiante,
     GrupoHomologas,
     Plan,
     Periodo,
@@ -47,20 +47,6 @@ admin.site.unregister(User)
 
 admin.site.register(User, UserAdmin)
 
-
-class AlumnoResource(resources.ModelResource):
-    """Docstring"""
-    class Meta:
-        """Docstring"""
-        model = Alumno
-
-
-class AlumnoAdmin(ImportExportModelAdmin):
-    """Docstring"""
-    resource_class = AlumnoResource
-
-
-admin.site.register(Alumno, AlumnoAdmin)
 
 
 class AsignaturaResource(resources.ModelResource):
@@ -164,6 +150,20 @@ class AsignaturaInLine(admin.TabularInline):
 @admin.register(Enfasis)
 class EnfasisAdmin(ImportExportModelAdmin):
     """Docstring"""
+
+class EstudianteResource(resources.ModelResource):
+    """Docstring"""
+    class Meta:
+        """Docstring"""
+        model = Estudiante
+
+
+class EstudianteAdmin(ImportExportModelAdmin):
+    """Docstring"""
+    resource_class = EstudianteResource
+
+
+admin.site.register(Estudiante, EstudianteAdmin)
 
 
 @admin.register(GrupoHomologas)

@@ -12,8 +12,6 @@ app_name = 'academico'
 
 urlpatterns = [
     path('',views.index, name='index'),
-    path('alumno/', views.alumno_list, name='alumno_list'),
-    path('alumno/<int:pk>/', views.alumno_detail, name='alumno_detail'),
     path('asignatura/', views.AsignaturaTableView.as_view(), name='asignatura_list'),
     path('asignatura/<int:pk>/', views.asignatura_detail_view, name='asignatura_detail_view'),
     path('asignatura/<int:pk>/plan/', views.AsignaturaPlanView.as_view(), name='asignatura_plan_list'),
@@ -32,6 +30,8 @@ urlpatterns = [
     path('documento/create/', views.DocumentoCreateView.as_view(), name='documento_create'),
     path('documento/<int:pk>/', views.DocumentoDetailView.as_view(), name='documento_detail'),
     path('documento/<int:pk>/update/', views.DocumentoUpdateView.as_view(), name='documento_update'),
+    path('estudiante/', views.estudiante_list, name='estudiante_list'),
+    path('estudiante/<int:pk>/', views.estudiante_detail, name='estudiante_detail'),
     path('registrocatedra/<int:pk>/', views.registrocatedra_detail_view, name='registrocatedra_detail_view'),
     path('registrocatedra/<int:pk>/edit/', views.registrocatedra_edit_view, name='registrocatedra_edit_view')
 
