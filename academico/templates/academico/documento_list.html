@@ -4,13 +4,19 @@
 
 
 {% block content %}
+<div class="container-fluid">
 
-<div class="row">
+  <div class="row">
+    <div class="col-12">
+      <a href="{% url 'academico:documento_create' %}" class="btn btn-primary mb-2">Agregar</a>
+    </div>
+  </div>
+
+  <div class="row">
     <div class="col-12">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Documento</h3>
-
+          <h3 class="card-title">Documentos</h3>
           <div class="card-tools">
             {% if filter %}
                 <form action="" method="get" class="form form-inline">
@@ -22,8 +28,6 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body table-responsive p-0">
-
-          
           {% render_table table %}
         </div>
         <!-- /.card-body -->
@@ -31,6 +35,8 @@
       <!-- /.card -->
     </div>
   </div>
+
+</div>
 {% endblock %}
 
 
