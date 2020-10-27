@@ -247,6 +247,7 @@ def departamento_list(request):
 def docente_detail(request, pk):
     docente = get_object_or_404(Docente, pk=pk)
     docente_catedra_set = docente.catedra_set.all()[:5]
+    docente_documento_set = docente.documento_set.all()[:5]
     return render(
         request,
         'academico/docente_detail.html',
@@ -254,6 +255,7 @@ def docente_detail(request, pk):
             'titulo': "Detalle de docente " + str(docente),
             'docente': docente,
             'docente_catedra_set': docente_catedra_set,
+            'docente_documento_set': docente_documento_set,
         }
     )
 
