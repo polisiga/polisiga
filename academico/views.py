@@ -77,6 +77,7 @@ class AsignaturaTableView(SingleTableMixin, FilterView):
 class AsignaturaPlanView(SingleTableView):
     model = Plan
     table_class = PlanTable
+    #table = PlanTable(Plan.objects.filter(asignatura=))
     template_name = 'academico/asignatura_plan_list.html'
     
 
@@ -85,6 +86,10 @@ class AsignaturaPlanView(SingleTableView):
         self.asignatura = Asignatura.objects.get(pk=self.kwargs['pk'])
         return super(AsignaturaPlanView, self).dispatch(request, *args, **kwargs)
 
+    def get_queryset(self, *args, **kwargs):
+
+        return Plan.objects.filter(asignatura=self.asignatura)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         
@@ -92,6 +97,7 @@ class AsignaturaPlanView(SingleTableView):
         context["asignatura"] = self.asignatura
 
         return context
+        
 
 def asignatura_detail_view(request, pk):
     asignatura = get_object_or_404(Asignatura, pk=pk)
