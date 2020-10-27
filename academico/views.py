@@ -99,6 +99,10 @@ class AsignaturaPlanView(SingleTableView):
         return context
         
 
+class AsignaturaPlanDetailView(DetailView):
+    model = Plan
+    template_name = "academico/asignatura_plan_detail.html"
+
 def asignatura_detail_view(request, pk):
     asignatura = get_object_or_404(Asignatura, pk=pk)
 

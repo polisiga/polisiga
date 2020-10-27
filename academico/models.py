@@ -382,6 +382,10 @@ class Plan(models.Model):
     class Meta:
         unique_together = ('asignatura', 'year')
 
+
+    def get_absolute_url(self):
+        return reverse('academico:asignatura_plan_detail', kwargs={'pk': self.pk})
+
     def __str__(self):
         if self.asignatura is None:
             plan = "None"

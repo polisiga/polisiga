@@ -1,0 +1,36 @@
+{% extends 'adminlte/base.html' %}
+
+
+{% block content_header %}
+  {% include 'academico/content_header.html' %}
+{% endblock %}
+
+
+{% block content %}
+
+    <!-- Default card -->
+
+    <div class="card">
+        <div class="card-header with-border">
+            <h3 class="card-title">Detalle de Plan {{ object.year }} de {{ object.asignatura.nombre }}</h3>
+        </div>
+        <div class="card-body">
+            <p>
+                {{ object.nombre }}
+            </p>
+            
+            <p>
+            <br>
+            <h3>Contenidos</h3>
+            <ul>
+            {% for contenido in object.contenido_set.all %}
+                <li>{{ contenido }}</li>
+            {% endfor%}
+            </ul>
+        </div><!-- /.card-body -->
+        <div class="card-footer">
+            Footer
+        </div><!-- /.card-footer-->
+    </div><!-- /.card -->
+    
+{% endblock %}

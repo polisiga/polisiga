@@ -126,7 +126,7 @@ class DocumentoTable(tables.Table):
 
 class PlanTable(tables.Table):
 
-    #id = tables.Column(linkify=True)
+    id = tables.Column(linkify=True)
 
 
     # editar = tables.Column('', accessor=A('id'))

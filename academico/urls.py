@@ -12,6 +12,7 @@ app_name = 'academico'
 
 urlpatterns = [
     path('',views.index, name='index'),
+    path('plan/<int:pk>', views.AsignaturaPlanDetailView.as_view(), name='asignatura_plan_detail'),
     path('asignatura/', views.AsignaturaTableView.as_view(), name='asignatura_list'),
     path('asignatura/<int:pk>/', views.asignatura_detail_view, name='asignatura_detail_view'),
     path('asignatura/<int:pk>/plan/', views.AsignaturaPlanView.as_view(), name='asignatura_plan_list'),
