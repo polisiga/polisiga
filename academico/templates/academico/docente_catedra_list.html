@@ -2,35 +2,18 @@
 {% load render_table from django_tables2 %}
 {% load bootstrap4 %}
 
+
 {% block content_header %}
-<div class="content-header">
-  <div class="container-fluid">
-    <div class="row mb-2">
-      <div class="col-sm-6">
-        <h1 class="m-0 text-dark">{{ titulo }}</h1>
-      </div>
-      <div class="col-sm-6">
-        <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="{% url 'academico:index'%}">Tablero</a></li>
-          <li class="breadcrumb-item"><a href="{% url 'academico:docente_list' %}">Docentes</a></li>
-          <li class="breadcrumb-item"><a href="{% url 'academico:docente_detail' pk=docente.id %}">{{ docente.id }}</a></li> 
-          <li class="breadcrumb-item active">Catedras</li>     
-        </ol>
-      </div>
-    </div>
-  </div>
-</div>
+  {% include 'academico/content_header.html' %}
 {% endblock %}
 
 
 {% block content %}
-
-<div class="row">
+  <div class="row">
     <div class="col-12">
       <div class="card">
-        <div class="card-header">
+        <div class="card-header d-none">
           <h3 class="card-title">{{ titulo }}</h3>
-
           <div class="card-tools">
             {% if filter %}
                 <form action="" method="get" class="form form-inline">
@@ -38,12 +21,10 @@
                     {% bootstrap_button 'filtrar' %}
                 </form>
             {% endif %}
-          </div>
+        </div>
         </div>
         <!-- /.card-header -->
         <div class="card-body table-responsive p-0">
-
-          
           {% render_table table %}
         </div>
         <!-- /.card-body -->

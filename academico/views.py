@@ -194,7 +194,7 @@ class CarreraCatedraView(PermissionRequiredMixin, SingleTableView):
         context = super().get_context_data(**kwargs)
         
         context["titulo"] = "Asignaturas de " + str(self.carrera)
-        context['breadcrumbs'] = [
+        context["breadcrumbs"] = [
             {'value': "Inicio", 'url': reverse('academico:index')},
             {'value': "Carreras", 'url': reverse('academico:carrera_list')},
             {'value': str(self.carrera.siglas), 'url': reverse('academico:carrera_detail', args=[self.carrera.pk])},
@@ -285,12 +285,11 @@ class DocenteListView(PermissionRequiredMixin, SingleTableMixin, FilterView):
     template_name = 'academico/docente_list.html'
     filterset_class = DocenteFilter
 
-class DocenteCatedraView(PermissionRequiredMixin, SingleTableMixin, FilterView):
+class DocenteCatedraView(PermissionRequiredMixin, SingleTableView):
     permission_required = 'academico.view_catedra'
     table_class = CatedraTable
     model = Catedra
     template_name = 'academico/docente_catedra_list.html'
-    filterset_class = CatedraFilter
 
     def get_queryset(self):
         self.docente = Docente.objects.get(pk=self.kwargs['pk'])
@@ -302,7 +301,12 @@ class DocenteCatedraView(PermissionRequiredMixin, SingleTableMixin, FilterView):
         
         context["titulo"] = "Catedras de " + str(self.docente)
         context["docente"] = self.docente
-
+        context["breadcrumbs"] = [
+            {'value': "Inicio", 'url': reverse('academico:index')},
+            {'value': "Docentes", 'url': reverse('academico:docente_list')},
+            {'value': str(self.docente.id), 'url': reverse('academico:docente_detail', args=[self.docente.pk])},
+            {'value': "Catedras", 'active': True}
+        ]
         return context
     
 
