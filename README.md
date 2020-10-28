@@ -37,7 +37,7 @@ python manage.py dumpdata --indent 2 academico.catedra -o dumpdata/catedra.json
 
 
 
-# para windows 
+### para windows 
 cat .\dumpdata\departamento.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\carrera.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\grupohomologas.json | python .\manage.py loaddata --format=json  -
@@ -46,7 +46,7 @@ cat .\dumpdata\alumno.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\periodo.json | python .\manage.py loaddata --format=json  -
 cat .\dumpdata\docente.json | python .\manage.py loaddata --format=json  -
 
-# para linux
+### para linux
 cat dumpdata/departamento.json | python manage.py loaddata --format=json  -
 cat dumpdata/carrera.json | python manage.py loaddata --format=json  -
 cat dumpdata/grupohomologas.json | python manage.py loaddata --format=json  -
@@ -59,9 +59,15 @@ cat dumpdata/catedra.json | python manage.py loaddata --format=json  -
 cat dumpdata/plan.json | python manage.py loaddata --format=json  -
 cat dumpdata/contenido.json | python manage.py loaddata --format=json  -
 
-# para inicializar con docker
+## para inicializar con docker
 
 docker-compose exec web python manage.py migrate
 docker-compose exec web python manage.py createsuperuser
 
+## Backup de base de datos postgres con docker
 
+docker exec -t your-db-container pg_dumpall -c -U postgres > dump_`date +%d-%m-%Y"_"%H_%M_%S`.sql
+
+## Restauracion de base de datos postgres con docker
+
+cat your_dump.sql | docker exec -i your-db-container psql -U postgres
