@@ -13,7 +13,11 @@
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="{% url 'academico:index'%}">Inicio</a></li>
-          <li class="breadcrumb-item active">Docentes</li>
+          <li class="breadcrumb-item"><a href="{% url 'academico:carrera_list' %}">Carreras</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'academico:carrera_detail' asignatura.carrera.pk %}">{{ asignatura.carrera.siglas }}</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'academico:carrera_asignatura_list' asignatura.carrera.pk %}">Asignaturas</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'academico:asignatura_detail_view' asignatura.pk %}">{{ asignatura.nombre }}</a></li>
+          <li class="breadcrumb-item active">Planes</li>
         </ol>
       </div>
     </div>

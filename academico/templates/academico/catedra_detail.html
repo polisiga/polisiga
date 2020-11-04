@@ -6,6 +6,25 @@
 
 {% block content %}
 
+
+<div class="card">
+  <div class="card-header">
+    <h3 class="card-title">Detalles</h3>
+</div>
+<div class="card-body">
+  <p><strong>Docentes: </strong> 
+    <ul>
+    {% for docente in catedra.docentes.all %}<li>{{ docente }}</li>{% endfor %}
+    </ul>
+  </p>
+  <p><strong>Seccion: </strong> {{ catedra.seccion }}</p>
+  <p><strong>Periodo: </strong> {{ catedra.periodo }}</p>
+</div><!-- /.card-body -->
+<div class="card-footer">
+  
+</div><!-- /.card-footer-->
+</div><!-- /.card -->
+
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Registros de Cátedra</h3>
@@ -21,7 +40,11 @@
             <a href="{% url 'academico:registrocatedra_create_view' catedra.pk %}" class="btn btn-info float-right"><i class="fas fa-plus"></i>Cargar registro</a>
         </div><!-- /.card-footer-->
     </div><!-- /.card -->
+
+ 
+
     
 {% endblock %}
+
 
 

@@ -49,11 +49,30 @@
             </li>
             {% endif %}
 
+
+            {% if perms.academico.view_catedra %}
+            <li class="nav-item">
+              <a href="{% url 'academico:catedra_list' %}" class="nav-link {% if request.resolver_match.view_name == 'academico:catedra_list' %}active{% endif %}">
+                <i class="nav-icon fas fa-chalkboard-teacher"></i> 
+                <p>Catedras</p>
+              </a>
+            </li>
+            {% endif %}
+
             {% if perms.academico.view_documento %}
             <li class="nav-item">
               <a href="{% url 'academico:documento_list' %}" class="nav-link {% if request.resolver_match.view_name == 'academico:documento_list' %}active{% endif %}">
                 <i class="nav-icon far fa-file"></i> 
                 <p>Documentos</p>
+              </a>
+            </li>
+            {% endif %}
+
+            {% if perms.academico.view_carrera %}
+            <li class="nav-item">
+              <a href="{% url 'academico:carrera_list' %}" class="nav-link {% if request.resolver_match.view_name == 'academico:carrera_list' %}active{% endif %}">
+                <i class="nav-icon fas fa-university"></i> 
+                <p>Carreras</p>
               </a>
             </li>
             {% endif %}

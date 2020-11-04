@@ -1,8 +1,25 @@
 {% extends 'adminlte/base.html' %}
 
 
+{% block content_header %}
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0 text-dark">{{ titulo }}</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'academico:index'%}">Inicio</a></li>
+          <li class="breadcrumb-item"><a href="#">Asignaturas</a></li>
+          <li class="breadcrumb-item active">{{ asignatura }}</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
 
-{% block page_name %}Detalle de Asignatura{% endblock %}
 
 {% block content %}
 
@@ -51,6 +68,16 @@
             Footer
         </div><!-- /.card-footer-->
     </div><!-- /.card -->
+
+<div class="card">
+  <div class="card-header with-border">
+    <h3 class="card-title">Plan</h3>
+  </div>
+  <div class="card-body">
+    <p><a href="{% url 'academico:asignatura_plan_list' asignatura.pk %}">Ver Planes...</a></p>
+  </div>
+</div>
+
 {% endblock %}
 
 

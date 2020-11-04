@@ -1,8 +1,25 @@
 {% extends 'adminlte/base.html' %}
 
 
+{% block content_header %}
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0 text-dark">{{ titulo }}</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'academico:index'%}">Inicio</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'academico:docente_list' %}">Docentes</a></li>
+          <li class="breadcrumb-item active">{{ docente.id }}</li>   
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
 
-{% block page_name %}Detalle de Docente {{ docente }}{% endblock %}
 
 {% block content %}
 
@@ -28,10 +45,15 @@
         </div>
         <div class="card-body">
         <ul>
-            {% for catedra in docente.catedra_set.all %}
+            {% for catedra in docente_catedra_set %}
                 <li>{{ catedra }}</li>
             {% endfor %}
+            <br>
+            <a href="{% url 'academico:docente_catedra_list' docente.id %}">Ver mas</a>
         </ul>
+        </div>
+        <div class="card-footer">
+            <button type="submit" class="save btn btn-success float-right">Nuevo</button>
         </div>
     </div>
 
@@ -41,7 +63,7 @@
         </div>
         <div class="card-body">
         <ul>
-            {% for documento in docente.documento_set.all %}
+            {% for documento in docente_documento_set.all %}
                 <li>{{ documento }}</li>
             {% endfor %}
         </ul>

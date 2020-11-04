@@ -2,7 +2,6 @@
 {% load render_table from django_tables2 %}
 {% load bootstrap4 %}
 
-
 {% block content_header %}
 <div class="content-header">
   <div class="container-fluid">
@@ -12,8 +11,8 @@
       </div>
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
-          <li class="breadcrumb-item"><a href="{% url 'academico:index'%}">Inicio</a></li>
-          <li class="breadcrumb-item active">Docentes</li>
+          <li class="breadcrumb-item"><a href="{% url 'academico:index'%}">Tablero</a></li>
+          <li class="breadcrumb-item active">Catedras</li>
         </ol>
       </div>
     </div>
@@ -23,8 +22,7 @@
 
 
 {% block content %}
-
-<div class="row">
+  <div class="row">
     <div class="col-12">
       <div class="card">
         <div class="card-header">
@@ -39,8 +37,6 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body table-responsive p-0">
-
-          
           {% render_table table %}
         </div>
         <!-- /.card-body -->
@@ -48,4 +44,17 @@
       <!-- /.card -->
     </div>
   </div>
+{% endblock %}
+
+
+
+{% block extra_js %}
+  <script>
+    $(document).ready(function() {
+      $('#id_asignaturas').select2({theme: 'bootstrap4'});
+    });
+  </script>
+
+{{ filter.form.media }}
+
 {% endblock %}

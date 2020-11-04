@@ -5,25 +5,12 @@ from django.db import models
 from django.db.models.signals import m2m_changed
 from django.urls import reverse
 
+import datetime
+
 
 User = settings.AUTH_USER_MODEL
 
 
-class Alumno(models.Model):
-    """Alumno"""
-    user = models.OneToOneField(
-        User, on_delete=models.PROTECT, blank=True, null=True)
-    cedula = models.BigIntegerField(unique=True)
-    nombre = models.CharField(max_length=30)
-    apellido = models.CharField(max_length=30)
-    correo = models.EmailField(unique=True, blank=True)
-
-    def __str__(self):
-        return self.nombre + " " + self.apellido
-
-    def get_absolute_url(self):
-        """Docstring"""
-        return reverse('academico:alumno_detail', kwargs={'pk': self.pk})
 
 
 # TODO: Verificar si dos Asignaturas tienen el mismo codigo, (GrupoHomologas)
@@ -47,6 +34,9 @@ class Asignatura(models.Model):
         """Docstring"""
         return self.departamento.siglas
 
+    def get_plan_activo(self):
+        pass
+
     def homologas(self):
         """
         Nos da las asignaturas homologas en esta asignatura
@@ -62,7 +52,8 @@ class Asignatura(models.Model):
         return x_str
 
     def get_absolute_url(self):
-        return f"{self.id}/"
+        #return f"{self.id}/"
+        return reverse('academico:asignatura_detail_view', kwargs={'pk': self.pk})
 
     def __str__(self):
         return str(self.pk) + " - " + self.carrera.siglas + " - " + self.nombre
@@ -73,6 +64,9 @@ class Carrera(models.Model):
     nombre = models.CharField(max_length=50)
     siglas = models.CharField(max_length=5, blank=True)
     semestres = models.IntegerField(blank=True, null=True)
+
+    def get_absolute_url(self):
+        return reverse('academico:carrera_detail', kwargs={'pk': self.pk})
 
     def __str__(self):
 
@@ -199,7 +193,7 @@ class Catedra(models.Model):
         return plan_activo
 
     def get_absolute_url(self):
-        return reverse('academico:catedra-detail', kwargs={'pk': self.pk})
+        return reverse('academico:catedra_detail_view', kwargs={'pk': self.pk})
 
     def get_plan(self):
         '''
@@ -215,6 +209,8 @@ class Catedra(models.Model):
 def catedra_asignaturas_changed(sender, *args, **kwargs):
     """Docstring"""
     if kwargs['action'] == 'pre_add':
+
+        #validar asignaturas homologas
         if kwargs['instance'].asignaturas.count() > 1:
             gh = kwargs['instance'].asignaturas.first().grupohomologas.pk
             for pk_new in kwargs['pk_set']:
@@ -270,6 +266,29 @@ class Docente(models.Model):
         return str(self.id) + ' - ' + self.apellido + ', ' + self.nombre
 
 
+class Documento(models.Model):
+
+    TIPO_DOCUMENTO_SET = (
+        ('ACTA_CD', 'Acta Consejo Directivo'),
+        ('ACTA_CSU', 'Acta Consejo Superior Universitario'),
+    )
+
+    tipo = models.CharField(max_length=15, choices=TIPO_DOCUMENTO_SET)
+    descripcion = models.CharField(max_length=200)
+    fecha = models.DateField(blank=True)
+    nro_acta = models.IntegerField(blank=True)
+    nro_res = models.CharField(blank=True, max_length=15)
+    otra_numeracion = models.CharField(blank=True, max_length=15)
+    docentes_relacionados = models.ManyToManyField(Docente)
+    url = models.URLField(blank=True)
+
+    def get_absolute_url(self):
+        return reverse('academico:documento_detail', kwargs={'pk': self.pk})
+
+    def __str__(self):
+        return '{} - {} - {}'.format(self.fecha, self.get_tipo_display(), self.descripcion)
+    
+
 class Enfasis(models.Model):
     """Docstring"""
     nombre = models.CharField(max_length=50)
@@ -280,6 +299,23 @@ class Enfasis(models.Model):
     def __str__(self):
         return self.siglas + ' - ' + self.nombre + \
             ' (' + self.carrera.siglas + ')'
+
+
+class Estudiante(models.Model):
+    """Alumno"""
+    user = models.OneToOneField(
+        User, on_delete=models.PROTECT, blank=True, null=True)
+    cedula = models.BigIntegerField(unique=True)
+    nombre = models.CharField(max_length=30)
+    apellido = models.CharField(max_length=30)
+    correo = models.EmailField(unique=True, blank=True)
+
+    def __str__(self):
+        return self.nombre + " " + self.apellido
+
+    def get_absolute_url(self):
+        """Docstring"""
+        return reverse('academico:estudiante_detail', kwargs={'pk': self.pk})
 
 
 class GrupoHomologas(models.Model):
@@ -346,6 +382,10 @@ class Plan(models.Model):
     class Meta:
         unique_together = ('asignatura', 'year')
 
+
+    def get_absolute_url(self):
+        return reverse('academico:asignatura_plan_detail', kwargs={'pk': self.pk})
+
     def __str__(self):
         if self.asignatura is None:
             plan = "None"
@@ -389,6 +429,41 @@ class RegistroCatedra(models.Model):
     med_otros = models.TextField(
         "Especificar otros medios auxiliares", default="", blank=True)
 
+    def clean(self):
+        #Verificar la cantidad de tiempo entre hora_desde y hora_hasta
+        datetime_desde = datetime.datetime(
+            self.fecha.year,
+            self.fecha.month,
+            self.fecha.day,
+            self.hora_desde.hour,
+            self.hora_desde.minute,
+            self.hora_desde.second,
+            self.hora_desde.microsecond
+        )
+        datetime_hasta = datetime.datetime(
+            self.fecha.year,
+            self.fecha.month,
+            self.fecha.day,
+            self.hora_hasta.hour,
+            self.hora_hasta.minute,
+            self.hora_hasta.second,
+            self.hora_hasta.microsecond
+        )
+
+        time_delta = datetime_hasta - datetime_desde
+        time_delta_horas = time_delta.total_seconds()/3600
+
+
+        if time_delta_horas > settings.POLISIGA_MAX_HORAS_CLASE:
+            raise ValidationError('Su Registro de Catedra tiene una duracion de ' \
+                + str(time_delta_horas) \
+                + ' horas, pero solo puede durar ' \
+                + str(settings.POLISIGA_MAX_HORAS_CLASE) \
+                + ' horas.')
+
+        if time_delta_horas <= 0:
+            raise ValidationError('La duracion del Registro de Catedra debe ser mayor a 0.')
+
     class Meta:
         """Docstring"""
         constraints = [
@@ -419,22 +494,3 @@ class RegistroCatedra(models.Model):
         return str(self.id)
 
 
-class Documento(models.Model):
-
-    TIPO_DOCUMENTO_SET = (
-        ('ACTA_CD', 'Acta Consejo Directivo'),
-        ('ACTA_CSU', 'Acta Consejo Superior Universitario'),
-    )
-
-    tipo = models.CharField(max_length=15, choices=TIPO_DOCUMENTO_SET)
-    descripcion = models.CharField(max_length=200)
-    fecha = models.DateField(blank=True)
-    nro_acta = models.IntegerField(blank=True)
-    nro_res = models.CharField(blank=True, max_length=15)
-    otra_numeracion = models.CharField(blank=True, max_length=15)
-    docentes_relacionados = models.ManyToManyField(Docente)
-    URL = models.URLField(blank=True)
-
-    def __str__(self):
-        return '{} - {} - {}'.format(self.fecha, self.get_tipo_display(), self.descripcion)
-    

@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import (
     permission_required,
 )
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator
 
 from django.shortcuts import (
@@ -11,7 +13,10 @@ from django.shortcuts import (
     redirect,
     render,
 )
+from django.urls import reverse
 from django.utils import timezone
+from django.views.generic import DetailView
+from django.views.generic.edit import CreateView
 from django.views.generic.edit import UpdateView
 from datetime import timedelta
 from datetime import date
@@ -23,6 +28,7 @@ from django_tables2 import (
 
 from .filters import (
     AsignaturaFilter,
+    CatedraFilter,
     DocenteFilter,
     DocumentoFilter
 )
@@ -32,17 +38,21 @@ from .forms import (
 )
 from .tables import (
     AsignaturaTable,
+    CatedraTable,
+    CarreraTable,
     DocenteTable,
     DocumentoTable,
+    PlanTable,
 )
 
 from .models import (
     Asignatura,
+    Carrera,
     Catedra,
+    Contenido,
     Docente,
     Documento,
-    Contenido,
-    Alumno,
+    Estudiante,
     Plan,
     RegistroCatedra,
 )
@@ -51,22 +61,10 @@ from .models import (
 def index(request):
 
 
-    return render(request, 'academico/index.html')
+    return render(request, 'academico/index.html',{'titulo': "Tablero"})
 
 def index_redirect(request):
     return redirect('academico:index')
-
-
-def alumno_detail(request, pk):
-    alumno = get_object_or_404(Alumno, pk=pk)
-
-    return render(request, 'academico/alumno_detail.html', {'alumno': alumno})
-
-@login_required
-@permission_required('view_alumno')
-def alumno_list(request):
-    alumnos = get_list_or_404(Alumno)
-    return render(request, 'academico/alumno_list.html', {'alumnos': alumnos})
 
 
 class AsignaturaTableView(SingleTableMixin, FilterView):
@@ -75,6 +73,35 @@ class AsignaturaTableView(SingleTableMixin, FilterView):
     template_name = 'academico/asignatura_table_view.html'
 
     filterset_class = AsignaturaFilter
+
+class AsignaturaPlanView(SingleTableView):
+    model = Plan
+    table_class = PlanTable
+    #table = PlanTable(Plan.objects.filter(asignatura=))
+    template_name = 'academico/asignatura_plan_list.html'
+    
+
+    def dispatch(self, request, *args, **kwargs):
+
+        self.asignatura = Asignatura.objects.get(pk=self.kwargs['pk'])
+        return super(AsignaturaPlanView, self).dispatch(request, *args, **kwargs)
+
+    def get_queryset(self, *args, **kwargs):
+
+        return Plan.objects.filter(asignatura=self.asignatura)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context["titulo"] = "Planes de " + str(self.asignatura)
+        context["asignatura"] = self.asignatura
+
+        return context
+        
+
+class AsignaturaPlanDetailView(DetailView):
+    model = Plan
+    template_name = "academico/asignatura_plan_detail.html"
 
 def asignatura_detail_view(request, pk):
     asignatura = get_object_or_404(Asignatura, pk=pk)
@@ -85,7 +112,6 @@ def asignatura_list_view(request, *args, **kwargs):
 
 
     asignatura_list = AsignaturaFilter(request.GET, queryset=Asignatura.objects.all())
-
 
     paginator = Paginator(asignatura_list.qs, 25)
 
@@ -104,14 +130,117 @@ def carrera_detail(request, pk):
 def carrera_list(request):
     return render(request, 'academico/carrera_list.html')   
 
+class CarreraListView(PermissionRequiredMixin, SingleTableView):
+    permission_required = 'academico.view_carrera'
+    table_class = CarreraTable
+    model = Carrera
+    template_name = 'academico/carrera_list'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['titulo'] = "Carreras"
+        context['breadcrumbs'] = [
+            {'value': "Inicio", 'url': reverse('academico:index')},
+            {'value': "Carreras", 'active': True}
+        ]
+        return context
+
+class CarreraDetailView(DetailView):
+    model = Carrera
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = "Detalle de " + str(self.object)
+        context['breadcrumbs'] = [
+            {'value': "Inicio", 'url': reverse('academico:index')},
+            {'value': "Carreras", 'url': reverse('academico:carrera_list')},
+            {'value': str(self.object.siglas), 'active': True}
+        ]
+        return context
+
+
+class CarreraAsignaturaView(PermissionRequiredMixin, SingleTableMixin, FilterView):
+    permission_required = 'academico.view_asigntura'
+    table_class = AsignaturaTable
+    model = Asignatura
+    template_name = 'academico/carrera_asignatura_list.html'
+    filterset_class = AsignaturaFilter
+
+    def get_queryset(self):
+        self.carrera = Carrera.objects.get(pk=self.kwargs['pk'])
+        qs = Asignatura.objects.filter(carrera=self.carrera)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context["titulo"] = "Asignaturas de " + str(self.carrera)
+        context['breadcrumbs'] = [
+            {'value': "Inicio", 'url': reverse('academico:index')},
+            {'value': "Carreras", 'url': reverse('academico:carrera_list')},
+            {'value': str(self.carrera.siglas), 'url': reverse('academico:carrera_detail', args=[self.carrera.pk])},
+            {'value': "Asignaturas", 'active': True}
+        ]
+
+        return context
+
+
+class CarreraCatedraView(PermissionRequiredMixin, SingleTableView):
+    permission_required = 'academico.view_catedra'
+    table_class = CatedraTable
+    model = Catedra
+    template_name = 'academico/carrera_catedra_list.html'
+    #filterset_class = CatedraFilter
+
+    def get_queryset(self):
+        self.carrera = Carrera.objects.get(pk=self.kwargs['pk'])
+        #qs = Catedra.objects.filter(carrera=self.carrera)
+        qs = Catedra.objects.filter(asignaturas__carrera=self.carrera)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context["titulo"] = "Asignaturas de " + str(self.carrera)
+        context["breadcrumbs"] = [
+            {'value': "Inicio", 'url': reverse('academico:index')},
+            {'value': "Carreras", 'url': reverse('academico:carrera_list')},
+            {'value': str(self.carrera.siglas), 'url': reverse('academico:carrera_detail', args=[self.carrera.pk])},
+            {'value': "Catedras", 'active': True}
+        ]
+
+        return context
+
+
+
+
 # TODO: Validar que dias podria cargar un registrocatedra
 def catedra_detail_view(request, pk):
 
     catedra = get_object_or_404(Catedra, pk=pk)
-    return render(request, 'academico/catedra_detail_view.html', {'catedra': catedra})
+    return render(request, 'academico/catedra_detail.html',
+                    {
+                        'catedra': catedra,
+                        'docentes': catedra.docentes
+                    
+                    })
 
 def catedra_list(request):
     return render(request, 'academico/catedra_list.html')
+
+class CatedraView(PermissionRequiredMixin, SingleTableMixin, FilterView):
+    permission_required = 'academico.view_catedra'
+    table_class = CatedraTable
+    model = Catedra
+    template_name = 'academico/catedra_list.html'
+    filterset_class = CatedraFilter
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["titulo"] = "Catedras"
+        return context
 
 def contenido_detail(request, pk):
     return render(request, 'academico/contenido_detail.html')
@@ -123,11 +252,22 @@ def departamento_detail(request, pk):
     return render(request, 'academico/departamento_detail.html')
 
 def departamento_list(request):
-    return render(request, 'academico/departamento_list.html')
+    return render(request, 'academico/departamento_list.html',{'titulo': "Docentes"})
 
 def docente_detail(request, pk):
     docente = get_object_or_404(Docente, pk=pk)
-    return render(request, 'academico/docente_detail.html',{'docente': docente})
+    docente_catedra_set = docente.catedra_set.all()[:5]
+    docente_documento_set = docente.documento_set.all()[:5]
+    return render(
+        request,
+        'academico/docente_detail.html',
+        {
+            'titulo': "Detalle de docente " + str(docente),
+            'docente': docente,
+            'docente_catedra_set': docente_catedra_set,
+            'docente_documento_set': docente_documento_set,
+        }
+    )
 
 class DocenteUpdateView(UpdateView):
     model = Docente
@@ -157,6 +297,43 @@ class DocenteListView(PermissionRequiredMixin, SingleTableMixin, FilterView):
     template_name = 'academico/docente_list.html'
     filterset_class = DocenteFilter
 
+class DocenteCatedraView(PermissionRequiredMixin, SingleTableView):
+    permission_required = 'academico.view_catedra'
+    table_class = CatedraTable
+    model = Catedra
+    template_name = 'academico/docente_catedra_list.html'
+
+    def get_queryset(self):
+        self.docente = Docente.objects.get(pk=self.kwargs['pk'])
+        qs = Catedra.objects.filter(docentes=self.docente)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context["titulo"] = "Catedras de " + str(self.docente)
+        context["docente"] = self.docente
+        context["breadcrumbs"] = [
+            {'value': "Inicio", 'url': reverse('academico:index')},
+            {'value': "Docentes", 'url': reverse('academico:docente_list')},
+            {'value': str(self.docente.id), 'url': reverse('academico:docente_detail', args=[self.docente.pk])},
+            {'value': "Catedras", 'active': True}
+        ]
+        return context
+    
+
+
+    
+
+    def has_permission(self, *args, **kwargs):
+        # si soy docente de la catedra se permite ver
+        # o si se tiene el permiso view_catedra
+
+
+        #se retorna True si se tiene permiso
+        return True
+
+
 class DocumentoListView(PermissionRequiredMixin, SingleTableMixin, FilterView):
     permission_required = 'academico.view_documento'
     table_class = DocumentoTable
@@ -164,11 +341,60 @@ class DocumentoListView(PermissionRequiredMixin, SingleTableMixin, FilterView):
     template_name = 'academico/documento_list.html'
     filterset_class = DocumentoFilter
 
+
+class DocumentoDetailView(DetailView):
+    model = Documento
+
+
+class DocumentoCreateView(SuccessMessageMixin, CreateView):
+    model = Documento
+    fields = [
+        'tipo',
+        'descripcion',
+        'fecha',
+        'nro_acta',
+        'nro_res',
+        'otra_numeracion',
+        'docentes_relacionados',
+        'url'
+    ]
+    template_name_suffix = '_create'
+    success_message = "Documento creado exitosamente."
+
+
+class DocumentoUpdateView(SuccessMessageMixin, UpdateView):
+    model = Documento
+    fields = [
+        'tipo',
+        'descripcion',
+        'fecha',
+        'nro_acta',
+        'nro_res',
+        'otra_numeracion',
+        'docentes_relacionados',
+        'url'
+    ]
+    template_name_suffix = '_update'
+    success_message = "Documento actualizado exitosamente."
+
+
 def enfasis_detail(request, pk):
     return render(request, 'academico/enfasis_detail.html')
 
 def enfasis_list(request):
     return render(request, 'academico/enfasis_list.html')
+
+
+def estudiante_detail(request, pk):
+    estudiante = get_object_or_404(Estudiante, pk=pk)
+
+    return render(request, 'academico/estudiante_detail.html', {'estudiante': estudiante})
+
+@login_required
+@permission_required('view_estudiante')
+def estudiante_list(request):
+    estudiantes = get_list_or_404(Estudianete)
+    return render(request, 'academico/estudiante_list.html', {'estudiante': estudiante})
 
 def grupo_homologas_detail(request, pk):
     return render(request, 'academico/grupo_homologas_detail.html')
@@ -209,6 +435,7 @@ def registrocatedra_edit_view(request, pk):
         if form.is_valid():
             form.save()
             #form.save_m2m()
+            messages.success(request, 'Registro de Catedra actualizado correctamente.')
             return redirect('academico:registrocatedra_detail_view', pk=registrocatedra.pk)
     else:
         form = RegistroCatedraForm(instance=registrocatedra)

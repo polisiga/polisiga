@@ -2,15 +2,27 @@
 
 
 
-{% block page_name %}Tablero {% endblock %}
+{% block content_header %}
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0 text-dark">{{ titulo }}</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'academico:index'%}">Inicio</a></li>
+          <li class="breadcrumb-item active">Tablero</li>
+
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
 
 {% block content %}
 
-    <!-- Si tiene perfil docente se muestra lista de catedras -->
-    <pre>
-      {{ perms.academico.update_docente }}
-    </pre>
-    
     {% if perms.academico.view_own_catedra %}
       <div class="card">
         <div class="card-header">
@@ -32,10 +44,10 @@
               {% for catedra in user.docente.catedra_set.all %}
               <tr>
                 <th scope="row">{{ catedra.id }}</th>
-                <td>{{ catedra.nombre }}</td>
-                <td>x</td>
-                <td>x</td>
-                <td>x</td>
+                <td>{{ catedra.asignaturas.first.nombre }}</td>
+                <td>{{ catedra.seccion }}</td>
+                <td>{{ catedra.asignaturas.first.carrera.siglas }}</td>
+                <td>{{ catedra.periodo }}</td>
                 <td>
                   <a href="{% url 'academico:catedra_detail_view' catedra.pk %}" class="btn btn-primary" role="button"><i class="far fa-eye"></i></a>
                   <a href="{% url 'academico:registrocatedra_create_view' catedra.pk %}" class="btn btn-success" role="button"><i class="fas fa-plus"></i></a>

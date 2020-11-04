@@ -1,0 +1,53 @@
+{% extends 'adminlte/base.html' %}
+{% load static %}
+
+
+{% block content_header %}
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h1 class="m-0 text-dark">Actualizar Documento #{{object.id}}</h1>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a href="{% url 'academico:index'%}">Inicio</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'academico:documento_list' %}">Documentos</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'academico:documento_detail' object.id %}">{{ object.id }}</a></li>
+          <li class="breadcrumb-item active">Actualizar</li>   
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+    <!-- Default card -->
+<form method="post">{% csrf_token %}
+    <div class="card">
+        <div class="card-header with-border">
+          <h3 class="card-title">Detalle</h3>
+        </div>
+        <div class="card-body">           
+                {{ form.as_p }}
+        </div><!-- /.card-body -->
+        <div class="card-footer">
+            <input class="btn btn-success float-right" type="submit" value="Guardar">
+        </div><!-- /.card-footer-->
+    </div><!-- /.card -->
+</form>
+{% endblock %}
+
+
+
+
+{% block extra_js %}
+  <script>
+    $(document).ready(function() {
+      $('#id_docentes_relacionados').select2({theme: 'bootstrap4'});
+    });
+  </script>
+{% endblock %}
+
